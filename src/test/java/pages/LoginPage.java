@@ -10,10 +10,11 @@ public class LoginPage {
     private static Locator passwordLocator;
     private static Locator loginLocator;
 
-    public LoginPage () {
+    public LoginPage (Page existingPage) {
+        page = existingPage;
         usernameLocator = page.locator("input[placeholder='Username']");
         passwordLocator = page.locator("input[placeholder='Password']");
-        usernameLocator = page.locator("button.orangehrm-login-button']");
+        loginLocator = page.locator("button.orangehrm-login-button");
     }
 
     public void fillUsername(String username) {
@@ -21,6 +22,10 @@ public class LoginPage {
     }
 
     public void fillPassword(String password) {
-        passwordLocator.fill
+        passwordLocator.fill(password);
+    }
+
+    public void submitLogin() {
+        loginLocator.click();
     }
 }
