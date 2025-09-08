@@ -1,6 +1,8 @@
 .idea/
 .allure/
 allure-results/
+screenshots/
+resources/
 .allure
 allure-results
 target/
