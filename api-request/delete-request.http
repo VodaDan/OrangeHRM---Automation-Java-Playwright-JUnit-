@@ -1,0 +1,10 @@
+### GET request to example server
+DELETE https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/pim/employees
+Content-Type: application/json
+Authorization: Bearer {{orangehrm}}
+
+{
+  "ids": "221"
+}
+
+###

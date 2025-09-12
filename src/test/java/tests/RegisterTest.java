@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pages.RegisterPage;
 import pages.LoginPage;
+import utils.ApiUtils;
+import utils.UrlUtils;
 
 import java.util.regex.Pattern;
 
@@ -39,6 +41,9 @@ public class RegisterTest extends BaseTest {
         registerPage.addEmployee(mockUser);
         assertThat(page).hasURL(Pattern.compile("https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewPersonalDetails/.*"));
         assertThat(page.locator("div.orangehrm-edit-employee-name > h6")).hasText(mockUser.getFirstName() + " " + mockUser.getLastName());
+
+        String empId = UrlUtils.extractEmpId(page.url());
+        ApiUtils.employeeCleanupById(empId);
     }
 
 }
