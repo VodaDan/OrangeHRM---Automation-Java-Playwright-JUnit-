@@ -1,13 +1,13 @@
 package model;
 
-public class user {
+public class User {
     private String role;
     private String name;
     private String status;
     private String username;
     private String password;
 
-    public user(String role, String name, String status, String username, String password) {
+    public User(String role, String name, String status, String username, String password) {
         this.role = role;
         this.name = name;
         this.status = status;
@@ -15,7 +15,7 @@ public class user {
         this.password = password;
     }
 
-    public user () {
+    public User() {
 
     }
 
