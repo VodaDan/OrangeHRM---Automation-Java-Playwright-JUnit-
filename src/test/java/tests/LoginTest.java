@@ -1,6 +1,7 @@
 package tests;
 
 import base.BaseTest;
+import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pages.LoginPage;
