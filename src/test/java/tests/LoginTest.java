@@ -10,7 +10,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class LoginTest extends BaseTest {
 
-    LoginPage loginPage;
+    private LoginPage loginPage;
 
     @Override
     @BeforeEach

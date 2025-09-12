@@ -3,6 +3,7 @@ package pages;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import model.User;
 
 public class RegisterPage {
 
@@ -39,5 +40,12 @@ public class RegisterPage {
 
     public void saveEmployee() {
         saveEmployeeButton.click();
+    }
+
+    public void addEmployee(User user) {
+        fillFirstName(user.getFirstName());
+        fillLastName(user.getLastName());
+        fillEmployeeId(user.getEmployeeId());
+        saveEmployee();
     }
 }
