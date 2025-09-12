@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.TestInfo;
+import utils.Navigation;
 
 
 public class BaseTest {
@@ -16,9 +17,11 @@ public class BaseTest {
     private Browser browser;
     protected Page page;
     BrowserContext context;
+    protected Navigation navigation;
 
     @BeforeEach
     public void setup() {
+
         playwright = Playwright.create();
         browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(150));
         context = browser.newContext();
@@ -27,6 +30,7 @@ public class BaseTest {
                 .setSnapshots(true)
                 .setSources(true));
         page = browser.newPage();
+        navigation = new Navigation(page);
     }
 
     @AfterEach
