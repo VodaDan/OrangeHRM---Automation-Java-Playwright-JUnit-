@@ -1,32 +1,53 @@
 package tests;
 
 import base.BaseTest;
+import com.microsoft.playwright.assertions.LocatorAssertions;
+import jdk.jfr.Description;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pages.LoginPage;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class LoginTest extends BaseTest {
 
-    private LoginPage loginPage;
+    private String loginUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
 
-    @Override
-    @BeforeEach
-    public void setup () {
-        super.setup();
-        loginPage = new LoginPage(page);
+    @Test
+    @Description("Login_TC01 - Verify that a user can log in with valid credentials")
+    public void validLoginTest () {
+        page.navigate(loginUrl);
+
+        loginPage.fillUsername(globalUser.getUsername());
+        loginPage.fillPassword(globalUser.getPassword());
+        loginPage.submitLogin();
+        assertThat(page.locator("h6[data-v-7b563373]")).hasText("Dashboard");
     }
 
     @Test
-    public void validLoginTest () {
-        page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-
-        loginPage.fillUsername("Admin");
-        loginPage.fillPassword("admin123");
+    @Description("Login_TC02 - Verify that login fails with invalid credentials")
+    public void invalidCredentialsLoginTest() {
+        page.navigate(loginUrl);
+        loginPage.fillUsername("WrongUsername");
+        loginPage.fillPassword("WrongPassword");
         loginPage.submitLogin();
-
-        assertThat(page.locator("h6[data-v-7b563373]")).hasText("Dashboard");
+        assertThat(page).hasURL(loginUrl);
+        assertThat(loginPage.getLoginValidationError()).hasText("Invalid credentials",new LocatorAssertions.HasTextOptions().setTimeout(10000));
     }
+
+    @Test
+    @Description("Login_TC03 - Verify that login fails when the username is left blank")
+    public void blankUsernameLoginTest() {
+        page.navigate(loginUrl);
+        loginPage.fillPassword(globalUser.getPassword());
+        loginPage.submitLogin();
+        assertThat(page).hasURL(loginUrl);
+        assertThat(page.locator("div:has(input[placeholder='Username']) + span")).hasText("Required");
+    }
+
+
 }
