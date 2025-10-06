@@ -1,5 +1,6 @@
 package utils;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.WaitUntilState;
 
 public class Navigation {
 
@@ -20,10 +21,10 @@ public class Navigation {
     }
 
     public void navigateAddUser() {
-        page.navigate(registerUserUrl);
+        page.navigate(registerUserUrl,new Page.NavigateOptions().setWaitUntil(WaitUntilState.NETWORKIDLE));
     }
 
     public void navigateAddEmployee() {
-        page.navigate(registerEmployeeUrl);
+        page.navigate(registerEmployeeUrl,new Page.NavigateOptions().setWaitUntil(WaitUntilState.NETWORKIDLE));
     }
 }
