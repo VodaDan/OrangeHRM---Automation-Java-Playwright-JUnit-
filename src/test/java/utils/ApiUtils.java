@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class ApiUtils {
 
+    // Obsolete : Data cleanup is automatically done by owner on a regular basis.
     public static void employeeCleanupById(String employeeId) {
         try(Playwright playwright = Playwright.create()) {
             String baseUrl = "https://opensource-demo.orangehrmlive.com";
