@@ -2,51 +2,77 @@ package base;
 
 import com.microsoft.playwright.*;
 import io.qameta.allure.Allure;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import model.User;
+import org.junit.jupiter.api.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.jupiter.api.TestInfo;
+import java.util.UUID;
+
+import pages.LoginPage;
+import pages.RegisterPage;
 import utils.Navigation;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BaseTest {
-    private Playwright playwright;
-    private Browser browser;
+    protected Playwright playwright;
+    protected Browser browser;
     protected Page page;
-    BrowserContext context;
+    protected BrowserContext context;
     protected Navigation navigation;
+    protected User globalUser = new User("Admin", "admin123");
+    protected RegisterPage registerPage;
+    protected LoginPage loginPage;
+
 
     @BeforeEach
     public void setup() {
-
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(300));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(1000));
         context = browser.newContext();
-        context.tracing().start(new Tracing.StartOptions()
-                .setScreenshots(true)
-                .setSnapshots(true)
-                .setSources(true));
-        page = browser.newPage();
+        String traceFile = "target/traces/" + "_" + UUID.randomUUID() + ".zip";
+        try {
+            Files.createDirectories(Paths.get(traceFile).getParent());
+            context.tracing().start(new Tracing.StartOptions()
+                    .setScreenshots(true)
+                    .setSnapshots(true)
+                    .setSources(false));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.page = context.newPage();
+        registerPage = new RegisterPage(page);
+        loginPage = new LoginPage(page);
         navigation = new Navigation(page);
+    }
+
+    public Page getPage() {
+        return page;
     }
 
     @AfterEach
     public void tearDown(TestInfo testInfo) throws IOException {
-        String uniqueName = testInfo.getDisplayName() + "_" + System.currentTimeMillis();
-        String fullPath = "screenshots/" + uniqueName + ".png";
+        // Screenshot
+        if (page != null) {
+            Path screenshotDir = Paths.get("screenshots");
+            Files.createDirectories(screenshotDir);
+            String screenshotFile = screenshotDir.resolve(testInfo.getDisplayName() + "_" + UUID.randomUUID() + ".png").toString();
+            Files.write(Paths.get(screenshotFile), page.screenshot(new Page.ScreenshotOptions().setFullPage(true)));
+            Allure.addAttachment(testInfo.getDisplayName(), "image/png", Files.newInputStream(Paths.get(screenshotFile)), "png");
+        }
 
-        Files.createDirectories(Paths.get("screenshots"));
-        byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
-        Files.write(Paths.get(fullPath),screenshot);
+        // Stop tracing
+        if (context != null) {
+            String traceFile = "target/traces/" + testInfo.getDisplayName() + "_" + UUID.randomUUID() + ".zip";
+            Files.createDirectories(Paths.get(traceFile).getParent());
+            context.tracing().stop(new Tracing.StopOptions().setPath(Paths.get(traceFile)));
+            context.close();
+            playwright.close();
+        }
 
-        Path tracePath = Paths.get("target/trace.zip");
-        context.tracing().stop(new Tracing.StopOptions().setPath(tracePath));
 
-        Allure.addAttachment(uniqueName,"image/png", Files.newInputStream(Paths.get(fullPath)),"png");
-        browser.close();
-        playwright.close();
     }
+
 }
