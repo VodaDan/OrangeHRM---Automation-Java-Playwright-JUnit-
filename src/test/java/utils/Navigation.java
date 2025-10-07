@@ -21,10 +21,10 @@ public class Navigation {
     }
 
     public void navigateAddUser() {
-        page.navigate(registerUserUrl,new Page.NavigateOptions().setWaitUntil(WaitUntilState.NETWORKIDLE));
+        page.navigate(registerUserUrl);
     }
 
     public void navigateAddEmployee() {
-        page.navigate(registerEmployeeUrl,new Page.NavigateOptions().setWaitUntil(WaitUntilState.NETWORKIDLE));
+        page.navigate(registerEmployeeUrl);
     }
 }

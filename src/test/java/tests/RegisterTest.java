@@ -25,7 +25,7 @@ public class RegisterTest extends BaseTest {
 
         User mockUser = new User();
         mockUser = mockUser.generateRandomUser();
-
+        page.waitForLoadState(LoadState.NETWORKIDLE);
         navigation.navigateAddEmployee();
 
         registerPage.addEmployee(mockUser);
