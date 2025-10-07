@@ -10,6 +10,7 @@ public class LoginPage {
     private static Locator passwordLocator;
     private static Locator loginLocator;
     private static Locator loginValidationError;
+    private static Locator forgotMyPasswordLocator;
 
     public LoginPage (Page existingPage) {
         page = existingPage;
@@ -17,6 +18,7 @@ public class LoginPage {
         passwordLocator = page.locator("input[placeholder='Password']");
         loginLocator = page.locator("button.orangehrm-login-button");
         loginValidationError = page.locator("p.oxd-alert-content-text");
+        forgotMyPasswordLocator = page.locator("p.orangehrm-login-forgot-header");
     }
 
     public void fillUsername(String username) {
@@ -33,5 +35,9 @@ public class LoginPage {
 
     public Locator getLoginValidationError() {
         return loginValidationError;
+    }
+
+    public void clickForgotMyPassword() {
+        forgotMyPasswordLocator.click();
     }
 }
