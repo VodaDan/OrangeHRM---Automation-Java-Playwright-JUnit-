@@ -2,10 +2,14 @@ package pages;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.LoadState;
+import model.User;
+import utils.Navigation;
 
 public class LoginPage {
 
     private static Page page;
+    private Navigation navigation;
     private static Locator usernameLocator;
     private static Locator passwordLocator;
     private static Locator loginLocator;
@@ -15,6 +19,7 @@ public class LoginPage {
 
     public LoginPage (Page existingPage) {
         page = existingPage;
+        navigation = new Navigation(page);
         usernameLocator = page.locator("input[placeholder='Username']");
         passwordLocator = page.locator("input[placeholder='Password']");
         loginLocator = page.locator("button.orangehrm-login-button");
@@ -33,6 +38,7 @@ public class LoginPage {
 
     public void submitLogin() {
         loginLocator.click();
+        page.waitForLoadState(LoadState.NETWORKIDLE);
     }
 
     public Locator getLoginValidationError() {
@@ -45,5 +51,13 @@ public class LoginPage {
 
     public static String getForgotPasswordURL() {
         return forgotPasswordURL;
+    }
+
+    //  login method for preconditions
+    public void loginUser(User user) {
+        navigation.navigateLogin();
+        fillUsername(user.getUsername());
+        fillPassword(user.getPassword());
+        submitLogin();
     }
 }
