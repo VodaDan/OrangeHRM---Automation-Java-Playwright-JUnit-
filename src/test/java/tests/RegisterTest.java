@@ -72,7 +72,7 @@ public class RegisterTest extends BaseTest {
 
     @Test
     @Description("Register_TC02c -  Verify that employee cannot be added when ID is left blank" +
-            "Input field has no placeholder" +
+            "Bug - Input field has no placeholder" +
             "Bug - No validation error is being raised")
     @Disabled
     public void idBlankFieldEmployeeTest() {
