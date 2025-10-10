@@ -11,6 +11,7 @@ public class LoginPage {
     private static Locator loginLocator;
     private static Locator loginValidationError;
     private static Locator forgotMyPasswordLocator;
+    private static String forgotPasswordURL;
 
     public LoginPage (Page existingPage) {
         page = existingPage;
@@ -19,6 +20,7 @@ public class LoginPage {
         loginLocator = page.locator("button.orangehrm-login-button");
         loginValidationError = page.locator("p.oxd-alert-content-text");
         forgotMyPasswordLocator = page.locator("p.orangehrm-login-forgot-header");
+        forgotPasswordURL = "http://localhost/orangehrm-5.7/web/index.php/auth/requestPasswordResetCode";
     }
 
     public void fillUsername(String username) {
@@ -39,5 +41,9 @@ public class LoginPage {
 
     public void clickForgotMyPassword() {
         forgotMyPasswordLocator.click();
+    }
+
+    public static String getForgotPasswordURL() {
+        return forgotPasswordURL;
     }
 }

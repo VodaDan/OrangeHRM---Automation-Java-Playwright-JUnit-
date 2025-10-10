@@ -15,14 +15,14 @@ import pages.LoginPage;
 import pages.RegisterPage;
 import utils.Navigation;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 public class BaseTest {
     protected Playwright playwright;
     protected Browser browser;
     protected Page page;
     protected BrowserContext context;
     protected Navigation navigation;
-    protected User globalUser = new User("Admin", "admin123");
+    protected User globalUser = new User("adminuser", "!Adminuser123");
     protected RegisterPage registerPage;
     protected LoginPage loginPage;
 
@@ -30,7 +30,7 @@ public class BaseTest {
     @BeforeEach
     public void setup() {
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(600));
         context = browser.newContext();
         String traceFile = "target/traces/" + "_" + UUID.randomUUID() + ".zip";
         try {

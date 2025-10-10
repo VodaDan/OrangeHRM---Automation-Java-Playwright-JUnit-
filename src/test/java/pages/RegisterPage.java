@@ -12,6 +12,7 @@ public class RegisterPage {
     private Locator lastNameLocator;
     private Locator employeeIdLocator;
     private Locator saveEmployeeButton;
+    private String viewPersonalDetailsURL;
 
     public RegisterPage(Page testPage) {
         page = testPage;
@@ -22,6 +23,7 @@ public class RegisterPage {
         lastNameLocator = page.locator("input[name='lastName']");
         employeeIdLocator = page.locator("//label[text()=\"Employee Id\"]/ancestor::div[contains(@class,\"oxd-input-group__label-wrapper\")]/following-sibling::div//input"); // no stable selector found
         saveEmployeeButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save"));
+        viewPersonalDetailsURL = "http://localhost/orangehrm-5.7/web/index.php/pim/viewPersonalDetails";
 
         // User Register
     }
@@ -47,5 +49,9 @@ public class RegisterPage {
         fillLastName(user.getLastName());
         fillEmployeeId(user.getEmployeeId());
         saveEmployee();
+    }
+
+    public String getViewPersonalDetailsURL() {
+        return viewPersonalDetailsURL;
     }
 }
