@@ -11,9 +11,9 @@ public class Navigation {
 
     public Navigation (Page testPage) {
         page = testPage;
-        loginUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
-        registerUserUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/admin/saveSystemUser";
-        registerEmployeeUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/pim/addEmployee";
+        loginUrl = "http://localhost/orangehrm-5.7/web/index.php/auth/login";
+        registerUserUrl = "http://localhost/orangehrm-5.7/web/index.php/admin/saveSystemUser";
+        registerEmployeeUrl = "http://localhost/orangehrm-5.7/web/index.php/pim/addEmployee";
     }
 
     public void navigateLogin() {
@@ -26,5 +26,21 @@ public class Navigation {
 
     public void navigateAddEmployee() {
         page.navigate(registerEmployeeUrl);
+    }
+
+    public String getLoginUrl() {
+        return loginUrl;
+    }
+
+    public String getRegisterUserUrl() {
+        return registerUserUrl;
+    }
+
+    public String getRegisterEmployeeUrl() {
+        return registerEmployeeUrl;
+    }
+
+    public Page getPage() {
+        return page;
     }
 }

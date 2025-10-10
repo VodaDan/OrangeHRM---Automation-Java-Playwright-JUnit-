@@ -15,12 +15,17 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class LoginTest extends BaseTest {
 
-    private String loginUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
+    @BeforeEach
+    public void setup() {
+        super.setup();
+    }
+
+
 
     @Test
     @Description("Login_TC01 - Verify that a user can log in with valid credentials")
     public void validLoginTest () {
-        page.navigate(loginUrl);
+        navigation.navigateLogin();
 
         loginPage.fillUsername(globalUser.getUsername());
         loginPage.fillPassword(globalUser.getPassword());
@@ -31,23 +36,23 @@ public class LoginTest extends BaseTest {
     @Test
     @Description("Login_TC02 - Verify that login fails with invalid credentials")
     public void invalidCredentialsLoginTest() {
-        page.navigate(loginUrl);
+        navigation.navigateLogin();
         loginPage.fillUsername("WrongUsername");
         loginPage.fillPassword("WrongPassword");
         loginPage.submitLogin();
 
-        assertThat(page).hasURL(loginUrl);
+        assertThat(page).hasURL(navigation.getLoginUrl());
         assertThat(loginPage.getLoginValidationError()).hasText("Invalid credentials",new LocatorAssertions.HasTextOptions().setTimeout(10000));
     }
 
     @Test
     @Description("Login_TC03 - Verify that login fails when the username is left blank")
     public void blankUsernameLoginTest() {
-        page.navigate(loginUrl);
+        navigation.navigateLogin();
         loginPage.fillPassword(globalUser.getPassword());
         loginPage.submitLogin();
 
-        assertThat(page).hasURL(loginUrl);
+        assertThat(page).hasURL(navigation.getLoginUrl());
         assertThat(page.locator("div:has(input[placeholder='Username']) + span")).hasText("Required");
     }
 
@@ -58,7 +63,7 @@ public class LoginTest extends BaseTest {
         loginPage.fillUsername(globalUser.getUsername());
         loginPage.submitLogin();
 
-        assertThat(page).hasURL(loginUrl);
+        assertThat(page).hasURL(navigation.getLoginUrl());
         assertThat(page.locator("div:has(input[placeholder='Password']) + span")).hasText("Required");
     }
 
@@ -71,7 +76,7 @@ public class LoginTest extends BaseTest {
         loginPage.fillPassword("Invalid Password");
         loginPage.submitLogin();
 
-        assertThat(page).hasURL(loginUrl);
+        assertThat(page).hasURL(navigation.getLoginUrl());
         assertThat(loginPage.getLoginValidationError()).hasText("Invalid credentials",new LocatorAssertions.HasTextOptions().setTimeout(10000));
     }
 
@@ -84,7 +89,7 @@ public class LoginTest extends BaseTest {
         loginPage.fillPassword(globalUser.getPassword() + "additional1234");
         loginPage.submitLogin();
 
-        assertThat(page).hasURL(loginUrl);
+        assertThat(page).hasURL(navigation.getLoginUrl());
         assertThat(loginPage.getLoginValidationError()).hasText("Invalid credentials",new LocatorAssertions.HasTextOptions().setTimeout(10000));
     }
 
@@ -97,7 +102,7 @@ public class LoginTest extends BaseTest {
         loginPage.fillPassword(globalUser.getPassword());
         loginPage.submitLogin();
 
-        assertThat(page).hasURL(loginUrl);
+        assertThat(page).hasURL(navigation.getLoginUrl());
         assertThat(loginPage.getLoginValidationError()).hasText("Invalid credentials",new LocatorAssertions.HasTextOptions().setTimeout(10000));
     }
 
@@ -106,7 +111,7 @@ public class LoginTest extends BaseTest {
     public void forgotMyPassowrdRedirectLoginTest() {
         navigation.navigateLogin();
         loginPage.clickForgotMyPassword();
-        assertThat(page).hasURL("https://opensource-demo.orangehrmlive.com/web/index.php/auth/requestPasswordResetCode");
+        assertThat(page).hasURL(loginPage.getForgotPasswordURL());
     }
 
 
