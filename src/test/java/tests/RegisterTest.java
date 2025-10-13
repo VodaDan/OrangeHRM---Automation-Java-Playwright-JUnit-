@@ -1,18 +1,24 @@
 package tests;
 
 import base.BaseTest;
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
 import jdk.jfr.Description;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import pages.RegisterPage;
 import pages.LoginPage;
 import utils.ApiUtils;
 import utils.UrlUtils;
 
+import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -107,6 +113,53 @@ public class RegisterTest extends BaseTest {
 
         assertThat(page.locator("div:has(input[name='firstName']) + span")).hasText("Invalid name");
         assertThat(page.locator("div:has(input[name='lastName']) + span")).hasText("Invalid name");
+    }
+
+    @Test
+    @Description("Register_TC04 - Verify that field length restrictions are enforced")
+    public void verifyFieldInputMaxLengthEmployeeTest() {
+        loginPage.loginUser(globalUser);
+
+        String firstName = "John".repeat(8).substring(0,31); // max 30 char
+        String lastName = "Doe".repeat(11).substring(0,31); // max 30 char
+        String id = UUID.randomUUID().toString().substring(0,11); // max 10 char
+
+        User mockUser = new User(firstName,lastName,id);
+
+        navigation.navigateAddEmployee();
+
+        registerPage.fillFirstName(mockUser.getFirstName());
+        registerPage.fillLastName(mockUser.getLastName());
+        registerPage.fillEmployeeId(mockUser.getEmployeeId());
+        registerPage.saveEmployee();
+
+        Locator messages = page.locator("span.oxd-input-group__message");
+
+        assertThat(messages).hasCount(3);
+
+        assertThat(messages.nth(0)).hasText("Should not exceed 30 characters");
+        assertThat(messages.nth(1)).hasText("Should not exceed 30 characters");
+        assertThat(messages.nth(2)).hasText("Should not exceed 10 characters");
+    }
+
+    @Test
+    @Description("Register_TC06 - Verify that the newly added employee appears in the employee list/table after submission.")
+    public void verifyNewEmployeeIsInEmployeeListTest() {
+        loginPage.loginUser(globalUser);
+
+        User mockUser = new User().generateRandomUser();
+
+        navigation.navigateAddEmployee();
+        registerPage.addEmployee(mockUser);
+        page.waitForURL(Pattern.compile("http://localhost/orangehrm-5.7/web/index.php/pim/viewPersonalDetails"+".*"));
+        navigation.navigateEmployeeList();
+        employeeListPage.fillSearchByName(mockUser.getFirstName());
+        employeeListPage.fillSearchByEmployeeId(mockUser.getEmployeeId());
+
+        employeeListPage.clickSearch();
+
+        assertThat(employeeListPage.getEmployeeTable()).containsText(mockUser.getFirstName());
+        assertThat(employeeListPage.getEmployeeTable()).containsText(mockUser.getEmployeeId());
     }
 
 
