@@ -29,6 +29,12 @@ public class User {
         this.password = password;
     }
 
+    public User(String firstName, String lastName, String id) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.employeeId = id;
+    }
+
     public User generateRandomUser() {
         firstName = TestDataFactory.generateRandomName();
         lastName = TestDataFactory.generateRandomLastName();

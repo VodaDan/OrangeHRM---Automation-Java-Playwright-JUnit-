@@ -7,6 +7,7 @@ public class Navigation {
     private String loginUrl;
     private String registerUserUrl;
     private String registerEmployeeUrl;
+    private String viewEmployeeListUrl;
     private Page page;
 
     public Navigation (Page testPage) {
@@ -14,6 +15,7 @@ public class Navigation {
         loginUrl = "http://localhost/orangehrm-5.7/web/index.php/auth/login";
         registerUserUrl = "http://localhost/orangehrm-5.7/web/index.php/admin/saveSystemUser";
         registerEmployeeUrl = "http://localhost/orangehrm-5.7/web/index.php/pim/addEmployee";
+        viewEmployeeListUrl = "http://localhost/orangehrm-5.7/web/index.php/pim/viewEmployeeList";
     }
 
     public void navigateLogin() {
@@ -26,6 +28,10 @@ public class Navigation {
 
     public void navigateAddEmployee() {
         page.navigate(registerEmployeeUrl);
+    }
+
+    public void navigateEmployeeList() {
+        page.navigate(viewEmployeeListUrl);
     }
 
     public String getLoginUrl() {

@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import pages.EmployeeListPage;
 import pages.LoginPage;
 import pages.RegisterPage;
 import utils.Navigation;
@@ -25,12 +26,13 @@ public class BaseTest {
     protected User globalUser = new User("adminuser", "!Adminuser123");
     protected RegisterPage registerPage;
     protected LoginPage loginPage;
+    protected EmployeeListPage employeeListPage;
 
 
     @BeforeEach
     public void setup() {
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(600));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
         context = browser.newContext();
         String traceFile = "target/traces/" + "_" + UUID.randomUUID() + ".zip";
         try {
@@ -43,9 +45,14 @@ public class BaseTest {
             e.printStackTrace();
         }
         this.page = context.newPage();
+        // Page Models
         registerPage = new RegisterPage(page);
         loginPage = new LoginPage(page);
+        employeeListPage = new EmployeeListPage(page);
+        // Navigation
         navigation = new Navigation(page);
+
+
     }
 
     public Page getPage() {
