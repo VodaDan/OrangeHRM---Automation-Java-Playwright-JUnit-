@@ -1,6 +1,8 @@
 package tests;
 
 import base.BaseTest;
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
 import com.microsoft.playwright.assertions.LocatorAssertions;
 import jdk.jfr.Description;
 import model.User;
@@ -10,6 +12,8 @@ import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pages.LoginPage;
+
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -107,11 +111,80 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
-    @Description("Login_TC08 - Verify 'Forgot My Password' button redirects to password reset link.")
+    @Description("Login_TC08 - Verify 'Forgot My Password' button redirects to password reset link")
     public void forgotMyPassowrdRedirectLoginTest() {
         navigation.navigateLogin();
         loginPage.clickForgotMyPassword();
         assertThat(page).hasURL(loginPage.getForgotPasswordURL());
+    }
+
+
+    @Test
+    @Description("Login_TC10 - Verify case sensitivity with valid login data")
+    public void verifyLoginCaseSensitivityLoginTest() {
+        navigation.navigateLogin();
+
+        loginPage.fillUsername(globalUser.getUsername().toUpperCase());
+        loginPage.fillPassword(globalUser.getPassword());
+        loginPage.submitLogin();
+
+
+        assertThat(page.locator("h6[data-v-7b563373]")).hasText("Dashboard");
+    }
+
+    @Test
+    @Description("Login_TC11 - Verify logout redirects to login page")
+    public void verifyLogoutRedirectsToLoginTest() {
+        navigation.navigateLogin();
+        loginPage.loginUser(globalUser);
+
+        loginPage.clickLogoutButton();
+        assertThat(page).hasURL(navigation.getLoginUrl());
+    }
+
+    @Test
+    @Description("Login_TC12 - Verify social media buttons link to correct page")
+    public void verifySocialMediaButtonsLoginTest() {
+        navigation.navigateLogin();
+        Locator links = page.locator("div.orangehrm-login-footer-sm a");
+
+        Locator linkedinButton = links.nth(0);
+        Locator youtubeButton = links.nth(3);
+        Locator facebookButton = links.nth(1);
+        Locator twitterButton = links.nth(2);;
+
+        //Linkedin
+        Page linkedinPage = context.waitForPage(() -> {
+            linkedinButton.click();
+        });
+        linkedinPage.waitForLoadState();
+        assertThat(linkedinPage).hasURL("https://www.linkedin.com/company/orangehrm");
+        linkedinPage.close();
+
+        //Facebook
+        Page facebookPage = context.waitForPage(() -> {
+            facebookButton.click();
+        });
+        facebookPage.waitForLoadState();
+        assertThat(facebookPage).hasURL("https://www.facebook.com/OrangeHRM/");
+        facebookPage.close();
+
+        //Youtube
+        Page youtubePage = context.waitForPage(() -> {
+            youtubeButton.click();
+        });
+        youtubePage.waitForLoadState();
+        assertThat(youtubePage).hasURL(Pattern.compile(".*"+"www.youtube.com"+".*")); // for guest user the link opens the consent cookies page of youtube not the channel
+        youtubePage.close();
+
+        //Twitter
+        Page twitterPage = context.waitForPage(() -> {
+            twitterButton.click();
+        });
+        twitterPage.waitForLoadState();
+        assertThat(twitterPage).hasURL("https://x.com/orangehrm?lang=en");
+        twitterPage.close();
+
     }
 
 
