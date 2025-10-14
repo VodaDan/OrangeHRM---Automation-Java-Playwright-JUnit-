@@ -216,7 +216,7 @@ public class LoginTest extends BaseTest {
         navigation.navigateLogin();
 
         AxeResults accessibilityScanResults = new AxeBuilder(page).analyze();
-        try (FileWriter writer = new FileWriter("Documents/4_Results/login_accessibility.txt", true)) {
+        try (FileWriter writer = new FileWriter("Documents/4_Results/login_accessibility.txt", false)) {
             for (Rule violation : accessibilityScanResults.getViolations()) {
                 writer.write("Rule: " + violation.getId() + "\n");
                 writer.write("Impact: " + violation.getImpact() + "\n");

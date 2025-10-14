@@ -28,33 +28,3 @@ Impact: moderate
 Description: Ensure all page content is contained by landmarks
 Help URL: https://dequeuniversity.com/rules/axe/4.10/region?application=PlaywrightJava
 
-Rule: color-contrast
-Impact: serious
-Description: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
-Help URL: https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=PlaywrightJava
-
-Rule: html-has-lang
-Impact: serious
-Description: Ensure every HTML document has a lang attribute
-Help URL: https://dequeuniversity.com/rules/axe/4.10/html-has-lang?application=PlaywrightJava
-
-Rule: landmark-one-main
-Impact: moderate
-Description: Ensure the document has a main landmark
-Help URL: https://dequeuniversity.com/rules/axe/4.10/landmark-one-main?application=PlaywrightJava
-
-Rule: link-name
-Impact: serious
-Description: Ensure links have discernible text
-Help URL: https://dequeuniversity.com/rules/axe/4.10/link-name?application=PlaywrightJava
-
-Rule: page-has-heading-one
-Impact: moderate
-Description: Ensure that the page, or at least one of its frames contains a level-one heading
-Help URL: https://dequeuniversity.com/rules/axe/4.10/page-has-heading-one?application=PlaywrightJava
-
-Rule: region
-Impact: moderate
-Description: Ensure all page content is contained by landmarks
-Help URL: https://dequeuniversity.com/rules/axe/4.10/region?application=PlaywrightJava
-
