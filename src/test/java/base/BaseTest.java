@@ -32,7 +32,7 @@ public class BaseTest {
     @BeforeEach
     public void setup() {
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setTimeout(300));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setTimeout(600));
         context = browser.newContext();
         String traceFile = "target/traces/" + "_" + UUID.randomUUID() + ".zip";
         try {

@@ -1,9 +1,14 @@
 package tests;
 
 import base.BaseTest;
+import com.deque.html.axecore.playwright.AxeBuilder;
+import com.deque.html.axecore.results.AxeResults;
+import com.deque.html.axecore.results.Results;
+import com.deque.html.axecore.results.Rule;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.assertions.LocatorAssertions;
+import com.microsoft.playwright.options.LoadState;
 import jdk.jfr.Description;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +18,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pages.LoginPage;
 
+import java.io.FileWriter;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoginTest extends BaseTest {
+
+    private static final Logger log = LoggerFactory.getLogger(LoginTest.class);
 
     @BeforeEach
     public void setup() {
@@ -187,5 +197,36 @@ public class LoginTest extends BaseTest {
 
     }
 
+    @Test
+    @Description("LoginAccessibility_TC01 - Verify login flow with keyboard")
+    public void verifyLoginFlowWithKeyboard () {
+        navigation.navigateLogin();
+        page.waitForLoadState(LoadState.NETWORKIDLE);
+        page.keyboard().insertText(globalUser.getUsername());
+        page.keyboard().press("Tab");
+        page.keyboard().insertText(globalUser.getPassword());
+        page.keyboard().press("Tab");
+        page.keyboard().press("Enter");
+        assertThat(page.locator("h6[data-v-7b563373]")).hasText("Dashboard");
+    }
+
+    @Test
+    @Description("LoginAccessibility_TC03 - Scan with Axe Core for common accessibility problems")
+    public void axecoreScanForAccesibilityLoginTest() {
+        navigation.navigateLogin();
+
+        AxeResults accessibilityScanResults = new AxeBuilder(page).analyze();
+        try (FileWriter writer = new FileWriter("Documents/4_Results/login_accessibility.txt", true)) {
+            for (Rule violation : accessibilityScanResults.getViolations()) {
+                writer.write("Rule: " + violation.getId() + "\n");
+                writer.write("Impact: " + violation.getImpact() + "\n");
+                writer.write("Description: " + violation.getDescription() + "\n");
+                writer.write("Help URL: " + violation.getHelpUrl() + "\n\n");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        assertEquals(Collections.emptyList(), accessibilityScanResults.getViolations());
+    }
 
 }
