@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 public class ApiTests extends BaseTest {
 
     private static String token;
@@ -35,26 +37,21 @@ public class ApiTests extends BaseTest {
     @BeforeAll
     public static void extractToken() {
         playwright = Playwright.create();
-        APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions()
-                .setBaseURL("http://localhost/orangehrm-5.7/web/index.php"));
+        APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setBaseURL("http://localhost/orangehrm-5.7/web/index.php"));
         APIResponse getLoginResponse = request.get("http://localhost/orangehrm-5.7/web/index.php/auth/login");
         Matcher m = Pattern.compile(":token=\"&quot;([a-zA-Z0-9._-]+)&quot;\"").matcher(getLoginResponse.text());
         String csrf = m.find() ? m.group(1) : null;
-
-        System.out.println("CSRF: " + csrf);
 
         Map<String,String> loginForm = new HashMap<>();
         FormData data = FormData.create();
         data.append("_token",csrf);
         data.append("username","adminuser");
-        data.append("paassword","!Adminuser123");
+        data.append("password","!Adminuser123");
 
         APIResponse postLoginResponse = request.post("http://localhost/orangehrm-5.7/web/index.php/auth/validate", RequestOptions.create().setForm(data));
         api = playwright.request().newContext(new APIRequest.NewContextOptions()
                 .setBaseURL("http://localhost/orangehrm-5.7/web/index.php")
                 .setStorageState(request.storageState()));
-        // System.out.println(request.storageState());
-        System.out.println(postLoginResponse.text());
 
         JsonObject obj = JsonParser.parseString(request.storageState()).getAsJsonObject();
         JsonArray cookies = obj.getAsJsonArray("cookies");
@@ -67,13 +64,12 @@ public class ApiTests extends BaseTest {
                 token = value;
             }
         }
-
     }
 
     @Test
     public void deleteByEmployeeId() {
         Map<String, Object> payload = new HashMap<>();
-        payload.put("ids", Collections.singletonList(15));
+        payload.put("ids", Collections.singletonList(12));
 
         RequestOptions options = RequestOptions.create()
                 .setHeader("Content-Type","application/json")
@@ -82,6 +78,6 @@ public class ApiTests extends BaseTest {
                 .setData(payload);
 
         APIResponse deleteResponse = api.delete("http://localhost/orangehrm-5.7/web/index.php/api/v2/pim/employees",options);
-        System.out.println(deleteResponse.text());
+        assertThat(deleteResponse).isOK();
     }
 }
