@@ -10,12 +10,18 @@ public class LoginPage {
 
     private static Page page;
     private Navigation navigation;
+
+    // Locators
     private static Locator usernameLocator;
     private static Locator passwordLocator;
     private static Locator loginLocator;
     private static Locator loginValidationError;
     private static Locator forgotMyPasswordLocator;
+    private static Locator logoutButton;
+    private static Locator dropDownMenu;
+
     private static String forgotPasswordURL;
+
 
     public LoginPage (Page existingPage) {
         page = existingPage;
@@ -25,6 +31,8 @@ public class LoginPage {
         loginLocator = page.locator("button.orangehrm-login-button");
         loginValidationError = page.locator("p.oxd-alert-content-text");
         forgotMyPasswordLocator = page.locator("p.orangehrm-login-forgot-header");
+        dropDownMenu = page.locator("p.oxd-userdropdown-name");
+        logoutButton = page.locator("a:has-text('Logout')");
         forgotPasswordURL = "http://localhost/orangehrm-5.7/web/index.php/auth/requestPasswordResetCode";
     }
 
@@ -49,8 +57,13 @@ public class LoginPage {
         forgotMyPasswordLocator.click();
     }
 
-    public static String getForgotPasswordURL() {
+    public String getForgotPasswordURL() {
         return forgotPasswordURL;
+    }
+
+    public void clickLogoutButton() {
+        dropDownMenu.click();
+        logoutButton.click();
     }
 
     //  login method for preconditions
@@ -60,4 +73,6 @@ public class LoginPage {
         fillPassword(user.getPassword());
         submitLogin();
     }
+
+
 }
