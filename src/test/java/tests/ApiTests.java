@@ -15,6 +15,8 @@ import org.apiguardian.api.API;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.ApiUtils;
+import utils.UrlUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,41 +37,17 @@ public class ApiTests extends BaseTest {
     }
 
     @BeforeAll
-    public static void extractToken() {
-        playwright = Playwright.create();
-        APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setBaseURL("http://localhost/orangehrm-5.7/web/index.php"));
-        APIResponse getLoginResponse = request.get("http://localhost/orangehrm-5.7/web/index.php/auth/login");
-        Matcher m = Pattern.compile(":token=\"&quot;([a-zA-Z0-9._-]+)&quot;\"").matcher(getLoginResponse.text());
-        String csrf = m.find() ? m.group(1) : null;
-
-        Map<String,String> loginForm = new HashMap<>();
-        FormData data = FormData.create();
-        data.append("_token",csrf);
-        data.append("username","adminuser");
-        data.append("password","!Adminuser123");
-
-        APIResponse postLoginResponse = request.post("http://localhost/orangehrm-5.7/web/index.php/auth/validate", RequestOptions.create().setForm(data));
-        api = playwright.request().newContext(new APIRequest.NewContextOptions()
-                .setBaseURL("http://localhost/orangehrm-5.7/web/index.php")
-                .setStorageState(request.storageState()));
-
-        JsonObject obj = JsonParser.parseString(request.storageState()).getAsJsonObject();
-        JsonArray cookies = obj.getAsJsonArray("cookies");
-
-        for (JsonElement el : cookies) {
-            JsonObject cookie = el.getAsJsonObject();
-            if (cookie.get("name").getAsString().equals("_orangehrm")) {
-                String value = cookie.get("value").getAsString();
-                System.out.println("_orangehrm cookie: " + value);
-                token = value;
-            }
-        }
+    public static void setupTokens() {
+        ApiUtils.AuthContext authContext = ApiUtils.extractToken();
+        api = authContext.getApi();
+        token = authContext.getToken();
     }
 
     @Test
     public void deleteByEmployeeId() {
+        int emp = ApiUtils.createEmployee();
         Map<String, Object> payload = new HashMap<>();
-        payload.put("ids", Collections.singletonList(12));
+        payload.put("ids", Collections.singletonList(emp));
 
         RequestOptions options = RequestOptions.create()
                 .setHeader("Content-Type","application/json")
