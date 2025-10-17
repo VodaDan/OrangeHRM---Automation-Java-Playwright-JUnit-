@@ -47,7 +47,6 @@ public class ApiUtils {
         Matcher m = Pattern.compile(":token=\"&quot;([a-zA-Z0-9._-]+)&quot;\"").matcher(getLoginResponse.text());
         String csrf = m.find() ? m.group(1) : null;
 
-        Map<String,String> loginForm = new HashMap<>();
         FormData data = FormData.create();
         data.append("_token",csrf);
         data.append("username","adminuser");
@@ -73,8 +72,8 @@ public class ApiUtils {
         return new AuthContext(token,api);
     }
 
-    public static int createEmployee() {
-        User employee = new User().generateRandomUser();
+    public static int createEmployee(User employeeSent) {
+        User employee = employeeSent;
 
 
         FormData employeeForm = FormData.create();
@@ -85,7 +84,6 @@ public class ApiUtils {
         employeeForm.append("employeeId",employee.getEmployeeId());
 
         APIResponse createEmployeeResponse = request.post("http://localhost/orangehrm-5.7/web/index.php/api/v2/pim/employees", RequestOptions.create().setForm(employeeForm));
-        System.out.println(createEmployeeResponse.text());
 
         String employeeResponseBody = createEmployeeResponse.text();
         JsonObject jsonResponse = JsonParser.parseString(employeeResponseBody).getAsJsonObject();
