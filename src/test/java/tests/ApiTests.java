@@ -1,5 +1,6 @@
 package tests;
 
+import annotations.Endpoint;
 import base.BaseTest;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -49,7 +50,8 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
-    @Description("API_TC01 - /api/v2/pim/employees - request DELETE by employee number")
+    @Endpoint(value = "/api/v2/pim/employees/",method = "DELETE")
+    @Description("API_TC01 - verify request to delete employees by employee number")
     public void deleteByEmployeeNumberApiTest() {
         User employee = new User().generateRandomUser();
         int emp = ApiUtils.createEmployee(employee);
@@ -68,7 +70,8 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
-    @Description("API_TC02 - /api/v2/pim/employees/ - request POST to create employee")
+    @Endpoint(value = "/api/v2/pim/employees/",method = "POST")
+    @Description("API_TC02 - verify request to create employees")
     public void createEmployeeApiTest() {
         User employee = new User().generateRandomUser();
         int empNumber = ApiUtils.createEmployee(employee);
