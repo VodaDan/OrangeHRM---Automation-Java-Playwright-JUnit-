@@ -74,7 +74,7 @@ public class ApiTests extends BaseTest {
     @Description("API_TC02 - verify request to create employees")
     public void createEmployeeApiTest() {
         User employee = new User().generateRandomUser();
-        int empNumber = ApiUtils.createEmployee(employee);
+        int empNumber = ApiUtils.createEmployee(employee); // post method is inside createEmployee
 
         assertTrue(empNumber>0, String.valueOf(empNumber));
 
