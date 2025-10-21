@@ -7,12 +7,12 @@ public class User {
     private String role;
     private String firstName;
     private String lastName;
-    private String status;
+    private boolean status;
     private String username;
     private String password;
     private String employeeId;
 
-    public User(String role, String firstName, String lastName, String status, String username, String password, String employeeId) {
+    public User(String role, String firstName, String lastName, boolean status, String username, String password, String employeeId) {
         this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,7 +39,7 @@ public class User {
         firstName = TestDataFactory.generateRandomName();
         lastName = TestDataFactory.generateRandomLastName();
         employeeId = TestDataFactory.generateEmployeeId();
-        status = "Enabled";
+        status = true;
         role = "ESS";
         username = TestDataFactory.generateRandomUsername();
         password = TestDataFactory.generateRandomPassword();
@@ -70,11 +70,11 @@ public class User {
         this.role = role;
     }
 
-    public String getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 

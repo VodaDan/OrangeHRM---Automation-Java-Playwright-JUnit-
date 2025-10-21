@@ -23,7 +23,7 @@ public class BaseTest {
     protected Page page;
     protected BrowserContext context;
     protected Navigation navigation;
-    protected User globalUser = new User("admin","admin","user" ,"enabled","adminuser","!Adminuser123","0001");
+    protected User globalUser = new User("admin","admin","user" ,true,"adminuser","!Adminuser123","0001");
     protected RegisterPage registerPage;
     protected LoginPage loginPage;
     protected EmployeeListPage employeeListPage;

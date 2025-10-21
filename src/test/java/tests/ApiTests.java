@@ -130,7 +130,7 @@ public class ApiTests extends BaseTest {
     @Test
     @Tag("api")
     @Endpoint(value = "/api/v2/admin/users/{id}", method = "GET")
-    @Description("API_USER_TC01")
+    @Description("API_USER_TC01 - Verify request to retrive an user details.")
     public void verifyGetUserDetailsApiTest() {
         int globalUserId = 1;
         APIResponse getUserDetails = api.get("http://localhost/orangehrm-5.7/web/index.php/" + usersEndpoint + "/" + globalUserId);
@@ -146,6 +146,30 @@ public class ApiTests extends BaseTest {
         assertEquals(globalUser.getFirstName(),employeeData.get("firstName").getAsString());
         assertEquals(globalUser.getLastName(),employeeData.get("lastName").getAsString());
         assertEquals(globalUser.getEmployeeId(),employeeData.get("employeeId").getAsString());
+    }
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/admin/users", method = "POST")
+    @Description("API_USER_TC02 - Verify request to create an user.")
+    public void creatUserRequestApiTest() {
+        User generatedUser = new User().generateRandomUser();
+
+        APIResponse createUserResponse = ApiUtils.createUser(generatedUser);
+
+        assertThat(createUserResponse).isOK();
+
+        JsonObject responseBody = JsonParser.parseString(createUserResponse.text()).getAsJsonObject();
+        JsonObject dataBody = responseBody.get("data").getAsJsonObject();
+
+        assertEquals(generatedUser.getUsername(), dataBody.get("userName").getAsString());
+        assertEquals(generatedUser.getStatus(), dataBody.get("status").getAsBoolean());
+
+        JsonObject employeeData = dataBody.get("employee").getAsJsonObject();
+
+        assertEquals(generatedUser.getFirstName(), employeeData.get("firstName").getAsString());
+        assertEquals(generatedUser.getLastName(), employeeData.get("lastName").getAsString());
+        assertEquals(generatedUser.getEmployeeId(), employeeData.get("employeeId").getAsString());
     }
 
 }
