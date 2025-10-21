@@ -36,6 +36,9 @@ public class ApiTests extends BaseTest {
     private static String token;
     private static APIRequestContext api;
 
+    private static String employeeEndpoint;
+    private static String usersEndpoint;
+
     @BeforeEach
     public void setup() {
         super.setup();
@@ -46,12 +49,16 @@ public class ApiTests extends BaseTest {
         ApiUtils.AuthContext authContext = ApiUtils.extractToken();
         api = authContext.getApi();
         token = authContext.getToken();
+        employeeEndpoint = "api/v2/pim/employees";
+        usersEndpoint = "api/v2/admin/users";
     }
+
+    // EMPLOYEE API --------------------------------------------------------------------------------
 
     @Test
     @Tag("api")
     @Endpoint(value = "/api/v2/pim/employees/",method = "DELETE")
-    @Description("API_TC01 - verify request to delete employees by employee number")
+    @Description("API_TC01 - Verify request to delete employees by employee number")
     public void deleteByEmployeeNumberApiTest() {
         User employee = new User().generateRandomUser();
         int emp = ApiUtils.createEmployee(employee);
@@ -64,21 +71,21 @@ public class ApiTests extends BaseTest {
                 .setHeader("Cookie","_orangehrm="+token)
                 .setData(payload);
 
-        APIResponse deleteResponse = api.delete("http://localhost/orangehrm-5.7/web/index.php/api/v2/pim/employees",options);
+        APIResponse deleteResponse = api.delete("http://localhost/orangehrm-5.7/web/index.php/" + employeeEndpoint,options);
         assertThat(deleteResponse).isOK();
     }
 
     @Test
     @Tag("api")
-    @Endpoint(value = "/api/v2/pim/employees/",method = "POST")
-    @Description("API_TC02 - verify request to create employees")
+    @Endpoint(value = "/api/v2/pim/employees/{id}",method = "POST")
+    @Description("API_TC02 - Verify request to create employees")
     public void createEmployeeApiTest() {
         User employee = new User().generateRandomUser();
         int empNumber = ApiUtils.createEmployee(employee); // post method is inside createEmployee
 
         assertTrue(empNumber>0, String.valueOf(empNumber));
 
-        APIResponse getEmployeeDetailsResponse = api.get("http://localhost/orangehrm-5.7/web/index.php/api/v2/pim/employees/" + empNumber);
+        APIResponse getEmployeeDetailsResponse = api.get("http://localhost/orangehrm-5.7/web/index.php/"+ employeeEndpoint + "/"+ empNumber);
 
         JsonObject jsonResponse = JsonParser.parseString(getEmployeeDetailsResponse.text()).getAsJsonObject();
         JsonObject responseData = jsonResponse.getAsJsonObject("data");
@@ -87,4 +94,58 @@ public class ApiTests extends BaseTest {
         assertEquals(employee.getLastName(), responseData.get("lastName").getAsString());
         assertEquals(employee.getEmployeeId(), responseData.get("employeeId").getAsString());
     }
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/pim/employees", method = "GET")
+    @Description("API_TC03 - Verify request to view employees details")
+    public void getEmployeeApiTest() {
+        int adminUserId = 1;
+        APIResponse getEmployeeDetailsResponse = api.get("http://localhost/orangehrm-5.7/web/index.php/" + employeeEndpoint + "/" + adminUserId);
+        JsonObject jsonResponse = JsonParser.parseString(getEmployeeDetailsResponse.text()).getAsJsonObject();
+        JsonObject responseData = jsonResponse.getAsJsonObject("data");
+
+        assertEquals(globalUser.getFirstName(),responseData.get("firstName").getAsString());
+        assertEquals(globalUser.getLastName(),responseData.get("lastName").getAsString());
+        assertEquals(globalUser.getEmployeeId(),responseData.get("employeeId").getAsString());
+    }
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/pim/employees/count", method = "GET")
+    @Description("API_TC04 - Verify request to count total employees count")
+    public void getTotalEmployeesCountApiTest() {
+       APIResponse getEmployeeCountResponse = api.get("http://localhost/orangehrm-5.7/web/index.php/" + employeeEndpoint + "/count");
+
+       assertThat(getEmployeeCountResponse).isOK();
+
+       JsonObject jsonResponse = JsonParser.parseString(getEmployeeCountResponse.text()).getAsJsonObject();
+       JsonObject responseData = jsonResponse.getAsJsonObject("data");
+
+       assertTrue(responseData.get("count").getAsInt() > 1);
+    }
+
+    // USER API --------------------------------------------------------------------------------
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/admin/users/{id}", method = "GET")
+    @Description("API_USER_TC01")
+    public void verifyGetUserDetailsApiTest() {
+        int globalUserId = 1;
+        APIResponse getUserDetails = api.get("http://localhost/orangehrm-5.7/web/index.php/" + usersEndpoint + "/" + globalUserId);
+
+        JsonObject userDetailsResponse = JsonParser.parseString(getUserDetails.text()).getAsJsonObject();
+        JsonObject userDetailsData = userDetailsResponse.getAsJsonObject("data");
+        System.out.println(userDetailsData);
+        assertEquals(globalUser.getUsername(),userDetailsData.get("userName").getAsString());
+        assertEquals(1,userDetailsData.get("id").getAsInt());
+
+        JsonObject employeeData = userDetailsData.getAsJsonObject("employee");
+
+        assertEquals(globalUser.getFirstName(),employeeData.get("firstName").getAsString());
+        assertEquals(globalUser.getLastName(),employeeData.get("lastName").getAsString());
+        assertEquals(globalUser.getEmployeeId(),employeeData.get("employeeId").getAsString());
+    }
+
 }
