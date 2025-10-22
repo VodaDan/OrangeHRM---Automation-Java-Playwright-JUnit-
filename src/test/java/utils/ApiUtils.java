@@ -8,12 +8,15 @@ import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.FormData;
 import com.microsoft.playwright.options.RequestOptions;
 import model.User;
+import org.apiguardian.api.API;
 import org.junit.jupiter.api.BeforeAll;
 import tests.ApiTests;
 
+import java.text.Normalizer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +24,7 @@ public class ApiUtils {
 
     private static APIRequestContext request;
 
+    // Data transfer object for token extraction and api object
     public static class AuthContext {
         public final String token;
         public final APIRequestContext api;
@@ -39,6 +43,25 @@ public class ApiUtils {
         }
     }
 
+    // Data Transfer Object for user creation and employee number
+    public static class CreateUserResponseDTO {
+        public final APIResponse response;
+        public final int emp;
+
+        public CreateUserResponseDTO(APIResponse response, int emp) {
+            this.response = response;
+            this.emp = emp;
+        }
+
+        public APIResponse getResponse() {
+            return response;
+        }
+
+        public int getEmp() {
+            return emp;
+        }
+    }
+
 
     public static AuthContext extractToken() {
         Playwright playwright = Playwright.create();
@@ -54,7 +77,7 @@ public class ApiUtils {
 
         APIResponse postLoginResponse = request.post("http://localhost/orangehrm-5.7/web/index.php/auth/validate", RequestOptions.create().setForm(data));
         APIRequestContext api = playwright.request().newContext(new APIRequest.NewContextOptions()
-                .setBaseURL("http://localhost/orangehrm-5.7/web/index.php")
+//                .setBaseURL("http://localhost/orangehrm-5.7/web/index.php")
                 .setStorageState(request.storageState()));
 
         JsonObject obj = JsonParser.parseString(request.storageState()).getAsJsonObject();
@@ -75,7 +98,6 @@ public class ApiUtils {
     public static int createEmployee(User employeeSent) {
         User employee = employeeSent;
 
-
         FormData employeeForm = FormData.create();
         employeeForm.append("firstName",employee.getFirstName());
         employeeForm.append("middleName","");
@@ -90,6 +112,29 @@ public class ApiUtils {
         JsonObject dataResponse = jsonResponse.getAsJsonObject("data");
 
         return dataResponse.get("empNumber").getAsInt();
+    }
 
+    public static CreateUserResponseDTO createUser(User userSent) {
+        int emp = ApiUtils.createEmployee(userSent);
+
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("username", userSent.getUsername());
+        userData.put("password", userSent.getPassword());
+        userData.put("status", userSent.getStatus());
+        if(userSent.getRole().equals("Admin")){
+            userData.put("userRoleId", 1);
+        } else {
+            userData.put("userRoleId", 2);
+        }
+        userData.put("empNumber", emp);
+
+        APIResponse createUserResponse = request.post(
+                "http://localhost/orangehrm-5.7/web/index.php/api/v2/admin/users",
+                RequestOptions.create().setData(userData) // Use setData() instead of setForm()
+        );
+
+        CreateUserResponseDTO responseDTO = new CreateUserResponseDTO(createUserResponse,emp);
+
+        return responseDTO;
     }
 }
