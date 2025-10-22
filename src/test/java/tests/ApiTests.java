@@ -36,6 +36,7 @@ public class ApiTests extends BaseTest {
     private static String token;
     private static APIRequestContext api;
 
+    private static String baseUrl;
     private static String employeeEndpoint;
     private static String usersEndpoint;
 
@@ -49,6 +50,7 @@ public class ApiTests extends BaseTest {
         ApiUtils.AuthContext authContext = ApiUtils.extractToken();
         api = authContext.getApi();
         token = authContext.getToken();
+        baseUrl = "http://localhost/orangehrm-5.7/web/index.php/";
         employeeEndpoint = "api/v2/pim/employees";
         usersEndpoint = "api/v2/admin/users";
     }
@@ -71,7 +73,7 @@ public class ApiTests extends BaseTest {
                 .setHeader("Cookie","_orangehrm="+token)
                 .setData(payload);
 
-        APIResponse deleteResponse = api.delete("http://localhost/orangehrm-5.7/web/index.php/" + employeeEndpoint,options);
+        APIResponse deleteResponse = api.delete(baseUrl + employeeEndpoint,options);
         assertThat(deleteResponse).isOK();
     }
 
@@ -85,7 +87,7 @@ public class ApiTests extends BaseTest {
 
         assertTrue(empNumber>0, String.valueOf(empNumber));
 
-        APIResponse getEmployeeDetailsResponse = api.get("http://localhost/orangehrm-5.7/web/index.php/"+ employeeEndpoint + "/"+ empNumber);
+        APIResponse getEmployeeDetailsResponse = api.get(baseUrl+ employeeEndpoint + "/"+ empNumber);
 
         JsonObject jsonResponse = JsonParser.parseString(getEmployeeDetailsResponse.text()).getAsJsonObject();
         JsonObject responseData = jsonResponse.getAsJsonObject("data");
@@ -101,7 +103,7 @@ public class ApiTests extends BaseTest {
     @Description("API_TC03 - Verify request to view employees details")
     public void getEmployeeApiTest() {
         int adminUserId = 1;
-        APIResponse getEmployeeDetailsResponse = api.get("http://localhost/orangehrm-5.7/web/index.php/" + employeeEndpoint + "/" + adminUserId);
+        APIResponse getEmployeeDetailsResponse = api.get(baseUrl + employeeEndpoint + "/" + adminUserId);
         JsonObject jsonResponse = JsonParser.parseString(getEmployeeDetailsResponse.text()).getAsJsonObject();
         JsonObject responseData = jsonResponse.getAsJsonObject("data");
 
@@ -115,7 +117,7 @@ public class ApiTests extends BaseTest {
     @Endpoint(value = "/api/v2/pim/employees/count", method = "GET")
     @Description("API_TC04 - Verify request to count total employees count")
     public void getTotalEmployeesCountApiTest() {
-       APIResponse getEmployeeCountResponse = api.get("http://localhost/orangehrm-5.7/web/index.php/" + employeeEndpoint + "/count");
+       APIResponse getEmployeeCountResponse = api.get(baseUrl + employeeEndpoint + "/count");
 
        assertThat(getEmployeeCountResponse).isOK();
 
@@ -133,11 +135,11 @@ public class ApiTests extends BaseTest {
     @Description("API_USER_TC01 - Verify request to retrive an user details.")
     public void verifyGetUserDetailsApiTest() {
         int globalUserId = 1;
-        APIResponse getUserDetails = api.get("http://localhost/orangehrm-5.7/web/index.php/" + usersEndpoint + "/" + globalUserId);
+        APIResponse getUserDetails = api.get(baseUrl + usersEndpoint + "/" + globalUserId);
 
         JsonObject userDetailsResponse = JsonParser.parseString(getUserDetails.text()).getAsJsonObject();
         JsonObject userDetailsData = userDetailsResponse.getAsJsonObject("data");
-        System.out.println(userDetailsData);
+
         assertEquals(globalUser.getUsername(),userDetailsData.get("userName").getAsString());
         assertEquals(1,userDetailsData.get("id").getAsInt());
 
@@ -155,7 +157,7 @@ public class ApiTests extends BaseTest {
     public void creatUserRequestApiTest() {
         User generatedUser = new User().generateRandomUser();
 
-        APIResponse createUserResponse = ApiUtils.createUser(generatedUser);
+        APIResponse createUserResponse = ApiUtils.createUser(generatedUser).getResponse();
 
         assertThat(createUserResponse).isOK();
 
@@ -170,6 +172,81 @@ public class ApiTests extends BaseTest {
         assertEquals(generatedUser.getFirstName(), employeeData.get("firstName").getAsString());
         assertEquals(generatedUser.getLastName(), employeeData.get("lastName").getAsString());
         assertEquals(generatedUser.getEmployeeId(), employeeData.get("employeeId").getAsString());
+    }
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/admin/users", method = "DELETE")
+    @Description("API_USER_TC03 - Verify request to delete an user.")
+    public void deleteUserRequestApiTest () {
+        // Create a new user for test, verify response and extract id
+        User generatedUser = new User().generateRandomUser();
+
+        ApiUtils.CreateUserResponseDTO createUserResponseDTO = ApiUtils.createUser(generatedUser);
+        APIResponse createResponse = createUserResponseDTO.getResponse();
+        assertThat(createResponse).isOK();
+        int id = JsonParser.parseString(createResponse.text()).getAsJsonObject().getAsJsonObject("data").get("id").getAsInt();
+
+        // Create payload for request with id to be deleted
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("ids",Collections.singletonList(id));
+
+        APIResponse deleteResponse = api.delete(baseUrl + usersEndpoint, RequestOptions.create().setData(payload));
+
+        // Check response and verify id that was deleted is the id of the user created
+        assertThat(deleteResponse).isOK();
+
+        JsonObject jsonResponse = JsonParser.parseString(deleteResponse.text()).getAsJsonObject();
+        JsonArray idsArray = jsonResponse.get("data").getAsJsonArray();
+
+        assertTrue(idsArray.toString().contains(String.valueOf(id)));
+    }
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/admin/users/{id}", method = "PUT")
+    @Description("API_USER_TC04 - Verify request to uptate an user details.")
+    public void updateUserRequestApiTest(){
+        // Create a new user for test, verify response and extract id
+        User generatedUser = new User().generateRandomUser();
+
+        ApiUtils.CreateUserResponseDTO createUserResponseDTO = ApiUtils.createUser(generatedUser);
+        APIResponse createResponse = createUserResponseDTO.getResponse();
+        assertThat(createResponse).isOK();
+        int id = JsonParser.parseString(createResponse.text()).getAsJsonObject().getAsJsonObject("data").get("id").getAsInt();
+
+        // Create new user and payload for request
+        User updateUser = new User().generateRandomUser();
+        int updatedEmployeeEmp = ApiUtils.createEmployee(updateUser);
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("changePassword",true);
+        payload.put("username", updateUser.getUsername());
+        payload.put("password", updateUser.getPassword());
+        payload.put("status", updateUser.getStatus());
+        if(updateUser.getRole().equals("Admin")){
+            payload.put("userRoleId", 1);
+        } else {
+            payload.put("userRoleId", 2);
+        }
+        payload.put("empNumber", updatedEmployeeEmp);
+
+        // Send the request
+        APIResponse updateUserResponse = api.put(baseUrl + usersEndpoint + "/" + id, RequestOptions.create().setData(payload));
+
+        // Assert User data
+        JsonObject responseJson = JsonParser.parseString(updateUserResponse.text()).getAsJsonObject();
+        JsonObject dataJson = responseJson.get("data").getAsJsonObject();
+
+        assertEquals(updateUser.getUsername(), dataJson.get("userName").getAsString());
+        assertEquals(updateUser.getStatus(), dataJson.get("status").getAsBoolean());
+
+        // Assert Employee data
+        JsonObject employeeJson = dataJson.get("employee").getAsJsonObject();
+
+        assertEquals(updateUser.getFirstName(),employeeJson.get("firstName").getAsString());
+        assertEquals(updateUser.getLastName(),employeeJson.get("lastName").getAsString());
+        assertEquals(updateUser.getEmployeeId(),employeeJson.get("employeeId").getAsString());
     }
 
 }

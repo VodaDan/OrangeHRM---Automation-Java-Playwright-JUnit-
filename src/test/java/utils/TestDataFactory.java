@@ -20,7 +20,7 @@ public class TestDataFactory {
     }
 
     public static String generateRandomPassword () {
-        return UUID.randomUUID().toString().substring(0,7)+"!A";
+        return UUID.randomUUID().toString().substring(0,10)+"1!A";
     }
 
     public static String generateEmployeeId() {
