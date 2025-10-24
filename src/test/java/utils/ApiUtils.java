@@ -158,9 +158,9 @@ public class ApiUtils {
         return dataText.get(field);
     }
 
-    public static void deleteProject(int id) {
+    public static APIResponse deleteProject(int id) {
         Map<String,Object> payload  = new HashMap<>();
         payload.put("ids",Collections.singletonList(id));
-        request.delete("http://localhost/orangehrm-5.7/web/index.php/api/v2/time/projects",RequestOptions.create().setData(payload));
+        return request.delete("http://localhost/orangehrm-5.7/web/index.php/api/v2/time/projects",RequestOptions.create().setData(payload));
     }
 }
