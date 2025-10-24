@@ -282,11 +282,13 @@ public class ApiTests extends BaseTest {
 
         assertThat(postResponse).isOK();
         try {
+            // Check generated values with response values
             assertEquals(generatedProject.getName(), ApiUtils.extractResponseData(postResponse, "name").getAsString());
             assertEquals(generatedProject.getDescription(), ApiUtils.extractResponseData(postResponse, "description").getAsString());
             assertEquals(generatedProject.getCustomerId(), ApiUtils.extractResponseData(postResponse, "customer").getAsJsonObject().get("id").getAsInt());
             assertEquals(generatedProject.getAdmins()[0], ApiUtils.extractResponseData(postResponse, "projectAdmins").getAsJsonArray().get(0).getAsJsonObject().get("empNumber").getAsInt());
         } finally {
+            // Cleanup
             ApiUtils.deleteProject(ApiUtils.extractResponseData(postResponse,"id").getAsInt());
         }
     }
@@ -297,10 +299,11 @@ public class ApiTests extends BaseTest {
     @Description("API_PROJECTS_TC03 - Verify request to delete a project")
     public void verifyDeleteProjectApiTest() {
         Project generatedProject = new Project();
-
+        // Create project
         APIResponse postResponse = ApiUtils.createProject(generatedProject);
         int postId = ApiUtils.extractResponseData(postResponse,"id").getAsInt();
 
+        // Send delete request
         APIResponse deleteResponse = ApiUtils.deleteProject(postId);
         JsonArray ids = JsonParser.parseString(deleteResponse.text()).getAsJsonObject().get("data").getAsJsonArray();
         int deleteId = ids.get(0).getAsInt();
@@ -314,7 +317,31 @@ public class ApiTests extends BaseTest {
     @Endpoint(value = "/api/v2/time/projects/{id}", method = "PUT")
     @Description("API_PROJECTS_TC04 - Verify request to update a project")
     public void verifyUpdateProjectDetailsApiTest() {
+        Project generatedProject = new Project();
+        APIResponse postResponse = ApiUtils.createProject(generatedProject);
+        int projectId = ApiUtils.extractResponseData(postResponse,"id").getAsInt();
 
+        // Create project and payload for put request
+        Project updateProject = new Project();
+
+        Map<String,Object> payload = new HashMap<>();
+        payload.put("customerId",updateProject.getCustomerId());
+        payload.put("name",updateProject.getName());
+        payload.put("description",updateProject.getDescription());
+        payload.put("projectAdminsEmpNumbers",updateProject.getAdmins());
+
+        APIResponse updateResponse = api.put(baseUrl + projectsEndpoint + "/" + projectId,RequestOptions.create().setData(payload));
+
+        try {
+            // Check updated values with response values
+            assertEquals(updateProject.getName(), ApiUtils.extractResponseData(updateResponse, "name").getAsString());
+            assertEquals(updateProject.getDescription(), ApiUtils.extractResponseData(updateResponse, "description").getAsString());
+            assertEquals(updateProject.getCustomerId(), ApiUtils.extractResponseData(updateResponse, "customer").getAsJsonObject().get("id").getAsInt());
+            assertEquals(updateProject.getAdmins()[0], ApiUtils.extractResponseData(updateResponse, "projectAdmins").getAsJsonArray().get(0).getAsJsonObject().get("empNumber").getAsInt());
+        } finally {
+            // Cleanup
+            ApiUtils.deleteProject(projectId);
+        }
     }
 
 }
