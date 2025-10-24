@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.FormData;
 import com.microsoft.playwright.options.RequestOptions;
+import model.Project;
 import model.User;
 import org.apiguardian.api.API;
 import org.junit.jupiter.api.BeforeAll;
@@ -136,5 +137,30 @@ public class ApiUtils {
         CreateUserResponseDTO responseDTO = new CreateUserResponseDTO(createUserResponse,emp);
 
         return responseDTO;
+    }
+
+    public static APIResponse createProject(Project generatedProject){
+
+        Map<String,Object> payload = new HashMap<>();
+        payload.put("customerId",generatedProject.getCustomerId());
+        payload.put("name",generatedProject.getName());
+        payload.put("description",generatedProject.getDescription());
+        payload.put("projectAdminsEmpNumbers",generatedProject.getAdmins());
+
+        APIResponse postResponse = request.post("http://localhost/orangehrm-5.7/web/index.php/api/v2/time/projects",RequestOptions.create().setData(payload));
+
+        return postResponse;
+    }
+
+    public static JsonElement extractResponseData(APIResponse apiResponse, String field) {
+        JsonObject responseText = JsonParser.parseString(apiResponse.text()).getAsJsonObject();
+        JsonObject dataText = responseText.get("data").getAsJsonObject();
+        return dataText.get(field);
+    }
+
+    public static APIResponse deleteProject(int id) {
+        Map<String,Object> payload  = new HashMap<>();
+        payload.put("ids",Collections.singletonList(id));
+        return request.delete("http://localhost/orangehrm-5.7/web/index.php/api/v2/time/projects",RequestOptions.create().setData(payload));
     }
 }

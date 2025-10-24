@@ -13,6 +13,7 @@ import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.FormData;
 import com.microsoft.playwright.options.RequestOptions;
 import jdk.jfr.Description;
+import model.Project;
 import model.User;
 import org.apiguardian.api.API;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,6 +40,7 @@ public class ApiTests extends BaseTest {
     private static String baseUrl;
     private static String employeeEndpoint;
     private static String usersEndpoint;
+    private static String projectsEndpoint;
 
     @BeforeEach
     public void setup() {
@@ -53,6 +55,7 @@ public class ApiTests extends BaseTest {
         baseUrl = "http://localhost/orangehrm-5.7/web/index.php/";
         employeeEndpoint = "api/v2/pim/employees";
         usersEndpoint = "api/v2/admin/users";
+        projectsEndpoint = "api/v2/time/projects";
     }
 
     // EMPLOYEE API --------------------------------------------------------------------------------
@@ -247,6 +250,98 @@ public class ApiTests extends BaseTest {
         assertEquals(updateUser.getFirstName(),employeeJson.get("firstName").getAsString());
         assertEquals(updateUser.getLastName(),employeeJson.get("lastName").getAsString());
         assertEquals(updateUser.getEmployeeId(),employeeJson.get("employeeId").getAsString());
+    }
+
+    // PROJECTS API --------------------------------------------------------------------------------
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/time/projects/{id}", method = "GET")
+    @Description("API_PROJECTS_TC01 - Verify request to view a project details")
+    public void verifyGetProjectDetailsApiTest() {
+        APIResponse detailsResponse = api.get(baseUrl + projectsEndpoint + "/1?model=detailed");
+
+        JsonObject responseJson = JsonParser.parseString(detailsResponse.text()).getAsJsonObject();
+        JsonObject dataJson = responseJson.get("data").getAsJsonObject();
+
+        System.out.println(responseJson);
+        assertEquals("Automation Project",dataJson.get("name").getAsString());
+        assertEquals("Automation Project",dataJson.get("description").getAsString());
+        assertEquals("OrangeHRM",dataJson.get("customer").getAsJsonObject().get("name").getAsString());
+        assertEquals("Great",dataJson.get("projectAdmins").getAsJsonArray().get(0).getAsJsonObject().get("lastName").getAsString());
+        assertEquals("Mary",dataJson.get("projectAdmins").getAsJsonArray().get(0).getAsJsonObject().get("firstName").getAsString());
+    }
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/time/projects", method = "POST")
+    @Description("API_PROJECTS_TC02 - Verify request to create a new project endpoint")
+    public void verifyCreateProjectApiTest() {
+        Project generatedProject = new Project();
+        APIResponse postResponse = ApiUtils.createProject(generatedProject);
+
+        assertThat(postResponse).isOK();
+        try {
+            // Check generated values with response values
+            assertEquals(generatedProject.getName(), ApiUtils.extractResponseData(postResponse, "name").getAsString());
+            assertEquals(generatedProject.getDescription(), ApiUtils.extractResponseData(postResponse, "description").getAsString());
+            assertEquals(generatedProject.getCustomerId(), ApiUtils.extractResponseData(postResponse, "customer").getAsJsonObject().get("id").getAsInt());
+            assertEquals(generatedProject.getAdmins()[0], ApiUtils.extractResponseData(postResponse, "projectAdmins").getAsJsonArray().get(0).getAsJsonObject().get("empNumber").getAsInt());
+        } finally {
+            // Cleanup
+            ApiUtils.deleteProject(ApiUtils.extractResponseData(postResponse,"id").getAsInt());
+        }
+    }
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/time/projects", method = "DELETE")
+    @Description("API_PROJECTS_TC03 - Verify request to delete a project")
+    public void verifyDeleteProjectApiTest() {
+        Project generatedProject = new Project();
+        // Create project
+        APIResponse postResponse = ApiUtils.createProject(generatedProject);
+        int postId = ApiUtils.extractResponseData(postResponse,"id").getAsInt();
+
+        // Send delete request
+        APIResponse deleteResponse = ApiUtils.deleteProject(postId);
+        JsonArray ids = JsonParser.parseString(deleteResponse.text()).getAsJsonObject().get("data").getAsJsonArray();
+        int deleteId = ids.get(0).getAsInt();
+
+        assertThat(deleteResponse).isOK();
+        assertEquals(postId,deleteId);
+    }
+
+    @Test
+    @Tag("api")
+    @Endpoint(value = "/api/v2/time/projects/{id}", method = "PUT")
+    @Description("API_PROJECTS_TC04 - Verify request to update a project")
+    public void verifyUpdateProjectDetailsApiTest() {
+        Project generatedProject = new Project();
+        APIResponse postResponse = ApiUtils.createProject(generatedProject);
+        int projectId = ApiUtils.extractResponseData(postResponse,"id").getAsInt();
+
+        // Create project and payload for put request
+        Project updateProject = new Project();
+
+        Map<String,Object> payload = new HashMap<>();
+        payload.put("customerId",updateProject.getCustomerId());
+        payload.put("name",updateProject.getName());
+        payload.put("description",updateProject.getDescription());
+        payload.put("projectAdminsEmpNumbers",updateProject.getAdmins());
+
+        APIResponse updateResponse = api.put(baseUrl + projectsEndpoint + "/" + projectId,RequestOptions.create().setData(payload));
+
+        try {
+            // Check updated values with response values
+            assertEquals(updateProject.getName(), ApiUtils.extractResponseData(updateResponse, "name").getAsString());
+            assertEquals(updateProject.getDescription(), ApiUtils.extractResponseData(updateResponse, "description").getAsString());
+            assertEquals(updateProject.getCustomerId(), ApiUtils.extractResponseData(updateResponse, "customer").getAsJsonObject().get("id").getAsInt());
+            assertEquals(updateProject.getAdmins()[0], ApiUtils.extractResponseData(updateResponse, "projectAdmins").getAsJsonArray().get(0).getAsJsonObject().get("empNumber").getAsInt());
+        } finally {
+            // Cleanup
+            ApiUtils.deleteProject(projectId);
+        }
     }
 
 }
