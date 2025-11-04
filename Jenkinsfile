@@ -3,7 +3,7 @@ pipeline {
     agent {
         docker {
             image 'mcr.microsoft.com/playwright/java:v1.48.0-noble'
-            args '-v /root/.m2:/root/.m2 --shm-size=2g'
+            args '-v /root/.m2:/root/.m2 --shm-size=2g --network=host'
         }
     }
 
