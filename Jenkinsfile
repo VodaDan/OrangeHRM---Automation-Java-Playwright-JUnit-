@@ -23,6 +23,13 @@ pipeline {
             steps {
                 echo 'Running Playwright automated tests...'
                 sh '''
+                    # Get host machine IP from container's perspective
+                    HOST_IP=$(ip route | grep default | awk '{print $3}')
+                    echo "Detected host IP: $HOST_IP"
+
+                    # Replace localhost with host IP in all Java test files
+                    find src/test -type f -name "*.java" -exec sed -i "s|http://localhost/orangehrm|http://$HOST_IP/orangehrm|g" {} +
+
                     mvn clean test \
                     -Dsurefire.useFile=false \
                     -DforkCount=1 \
