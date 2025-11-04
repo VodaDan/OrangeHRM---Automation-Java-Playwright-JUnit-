@@ -1,13 +1,5 @@
 pipeline {
 
-    stages{
-        stage('Initialize'){
-                def dockerHome = tool 'myDocker'
-                env.PATH = "${dockerHome}/bin:${env.PATH}"
-        }
-    }
-
-
     agent {
         docker {
             image 'maven:3.9-eclipse-temurin-17'
@@ -20,6 +12,18 @@ pipeline {
     }
 
     stages {
+
+        stage('Initialize') {
+                    steps {
+                        echo 'Initializing Docker environment...'
+                        // This only applies if you defined a Docker tool manually in Jenkins
+                        script {
+                            def dockerHome = tool 'myDocker'
+                            env.PATH = "${dockerHome}/bin:${env.PATH}"
+                        }
+                    }
+        }
+
         stage('Checkout') {
             steps {
                 echo 'Fetching latest code from Git...'
