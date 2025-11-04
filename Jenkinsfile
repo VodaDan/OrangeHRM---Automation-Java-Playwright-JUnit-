@@ -2,8 +2,8 @@ pipeline {
 
     agent {
         docker {
-            image 'maven:3.9-eclipse-temurin-17'
-            args '-v /root/.m2:/root/.m2'
+            image 'mcr.microsoft.com/playwright/java:v1.48.0-noble'
+            args '-v /root/.m2:/root/.m2 --shm-size=2g'
         }
     }
 
@@ -19,21 +19,19 @@ pipeline {
             }
         }
 
-        stage('Install Playwright Browsers') {
-            steps {
-                echo 'Installing Playwright browsers...'
-                sh 'npx playwright install --with-deps || true'
-            }
-        }
-
         stage('Run Tests') {
             steps {
                 echo 'Running Playwright automated tests...'
-                sh 'mvn clean test'
+                sh '''
+                    mvn clean test \
+                    -Dsurefire.useFile=false \
+                    -DforkCount=1 \
+                    -DreuseForks=false
+                '''
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
                 }
             }
         }
