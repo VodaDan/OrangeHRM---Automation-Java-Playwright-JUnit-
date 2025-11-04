@@ -3,7 +3,7 @@ pipeline {
     agent {
         docker {
             image 'mcr.microsoft.com/playwright/java:v1.48.0-noble'
-            args '-v /root/.m2:/root/.m2 --shm-size=2g --network=host'
+            args '-v /root/.m2:/root/.m2 --shm-size=2g'
         }
     }
 
@@ -28,7 +28,12 @@ pipeline {
                     echo "Detected host IP: $HOST_IP"
 
                     # Replace localhost with host IP in all Java test files
-                    find src/test -type f -name "*.java" -exec sed -i "s|http://localhost/orangehrm|http://$HOST_IP/orangehrm|g" {} +
+                    # This will match: http://localhost/orangehrm-5.7/
+                    find src/test -type f -name "*.java" -exec sed -i "s|http://localhost/orangehrm-5.7|http://$HOST_IP/orangehrm-5.7|g" {} +
+
+                    # Verify replacement worked (optional, for debugging)
+                    echo "Sample after replacement:"
+                    grep -r "http://$HOST_IP/orangehrm-5.7" src/test | head -3 || echo "No matches found"
 
                     mvn clean test \
                     -Dsurefire.useFile=false \
