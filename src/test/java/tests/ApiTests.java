@@ -62,6 +62,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("employee")
     @Endpoint(value = "/api/v2/pim/employees/",method = "DELETE")
     @Description("API_TC01 - Verify request to delete employees by employee number")
     public void deleteByEmployeeNumberApiTest() {
@@ -82,6 +83,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("employee")
     @Endpoint(value = "/api/v2/pim/employees/{id}",method = "POST")
     @Description("API_TC02 - Verify request to create employees")
     public void createEmployeeApiTest() {
@@ -102,6 +104,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("employee")
     @Endpoint(value = "/api/v2/pim/employees", method = "GET")
     @Description("API_TC03 - Verify request to view employees details")
     public void getEmployeeApiTest() {
@@ -117,6 +120,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("employee")
     @Endpoint(value = "/api/v2/pim/employees/count", method = "GET")
     @Description("API_TC04 - Verify request to count total employees count")
     public void getTotalEmployeesCountApiTest() {
@@ -134,6 +138,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("user")
     @Endpoint(value = "/api/v2/admin/users/{id}", method = "GET")
     @Description("API_USER_TC01 - Verify request to retrive an user details.")
     public void verifyGetUserDetailsApiTest() {
@@ -155,6 +160,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("user")
     @Endpoint(value = "/api/v2/admin/users", method = "POST")
     @Description("API_USER_TC02 - Verify request to create an user.")
     public void creatUserRequestApiTest() {
@@ -179,6 +185,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("user")
     @Endpoint(value = "/api/v2/admin/users", method = "DELETE")
     @Description("API_USER_TC03 - Verify request to delete an user.")
     public void deleteUserRequestApiTest () {
@@ -207,6 +214,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("user")
     @Endpoint(value = "/api/v2/admin/users/{id}", method = "PUT")
     @Description("API_USER_TC04 - Verify request to uptate an user details.")
     public void updateUserRequestApiTest(){
@@ -256,6 +264,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("project")
     @Endpoint(value = "/api/v2/time/projects/{id}", method = "GET")
     @Description("API_PROJECTS_TC01 - Verify request to view a project details")
     public void verifyGetProjectDetailsApiTest() {
@@ -274,6 +283,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("project")
     @Endpoint(value = "/api/v2/time/projects", method = "POST")
     @Description("API_PROJECTS_TC02 - Verify request to create a new project endpoint")
     public void verifyCreateProjectApiTest() {
@@ -295,6 +305,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("project")
     @Endpoint(value = "/api/v2/time/projects", method = "DELETE")
     @Description("API_PROJECTS_TC03 - Verify request to delete a project")
     public void verifyDeleteProjectApiTest() {
@@ -314,6 +325,7 @@ public class ApiTests extends BaseTest {
 
     @Test
     @Tag("api")
+    @Tag("project")
     @Endpoint(value = "/api/v2/time/projects/{id}", method = "PUT")
     @Description("API_PROJECTS_TC04 - Verify request to update a project")
     public void verifyUpdateProjectDetailsApiTest() {

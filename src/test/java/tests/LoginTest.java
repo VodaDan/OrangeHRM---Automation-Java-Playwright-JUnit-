@@ -12,6 +12,7 @@ import com.microsoft.playwright.options.LoadState;
 import jdk.jfr.Description;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ public class LoginTest extends BaseTest {
 
 
     @Test
+    @Tag("login")
     @Description("Login_TC01 - Verify that a user can log in with valid credentials")
     public void validLoginTest () {
         navigation.navigateLogin();
@@ -48,6 +50,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("Login_TC02 - Verify that login fails with invalid credentials")
     public void invalidCredentialsLoginTest() {
         navigation.navigateLogin();
@@ -60,6 +63,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("Login_TC03 - Verify that login fails when the username is left blank")
     public void blankUsernameLoginTest() {
         navigation.navigateLogin();
@@ -71,6 +75,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("Login_TC04 - Verify that login fails when the password is left blank")
     public void blankPasswordLoginTest() {
         navigation.navigateLogin();
@@ -82,6 +87,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("Login_TC05 - Verify that login fail when username is correct but password is invalid")
     public void validUsernameInvalidPasswordLoginTest() {
         navigation.navigateLogin();
@@ -95,6 +101,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("Login_TC09 - Verify that login fail when username is correct and password contains aditional characters")
     public void validUsernameValidPasswordWithAdditionalCharactersLoginTest() {
         navigation.navigateLogin();
@@ -108,6 +115,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("Login_TC06 - Verify that login fail when username is correct and password contains aditional characters")
     public void invalidUsernameValidPassowrdLoginTest() {
         navigation.navigateLogin();
@@ -121,6 +129,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("Login_TC08 - Verify 'Forgot My Password' button redirects to password reset link")
     public void forgotMyPassowrdRedirectLoginTest() {
         navigation.navigateLogin();
@@ -130,6 +139,7 @@ public class LoginTest extends BaseTest {
 
 
     @Test
+    @Tag("login")
     @Description("Login_TC10 - Verify case sensitivity with valid login data")
     public void verifyLoginCaseSensitivityLoginTest() {
         navigation.navigateLogin();
@@ -143,6 +153,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("Login_TC11 - Verify logout redirects to login page")
     public void verifyLogoutRedirectsToLoginTest() {
         navigation.navigateLogin();
@@ -153,6 +164,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("Login_TC12 - Verify social media buttons link to correct page")
     public void verifySocialMediaButtonsLoginTest() {
         navigation.navigateLogin();
@@ -198,6 +210,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("LoginAccessibility_TC01 - Verify login flow with keyboard")
     public void verifyLoginFlowWithKeyboard () {
         navigation.navigateLogin();
@@ -211,6 +224,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Tag("login")
     @Description("LoginAccessibility_TC03 - Scan with Axe Core for common accessibility problems")
     public void axecoreScanForAccesibilityLoginTest() {
         navigation.navigateLogin();

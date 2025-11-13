@@ -8,6 +8,7 @@ import jdk.jfr.Description;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +32,7 @@ public class RegisterTest extends BaseTest {
     }
 
     @Test
+    @Tag("register")
     @Description("Register_TC01 - Verify that a new employee can be added with valid first name, last name, and unique employee ID")
     public void createEmployeeTest() {
         loginPage.loginUser(globalUser);
@@ -44,6 +46,7 @@ public class RegisterTest extends BaseTest {
     }
 
     @Test
+    @Tag("register")
     @Description("Register_TC02a - Verify that employee cannot be added when Last Name is left blank")
     public void lastNameBlankFieldEmployeeTest() {
         loginPage.loginUser(globalUser);
@@ -60,6 +63,7 @@ public class RegisterTest extends BaseTest {
     }
 
     @Test
+    @Tag("register")
     @Description("Register_TC02b - Verify that employee cannot be added when First Name is left blank")
     public void firstNameBlankFieldEmployeeTest() {
         loginPage.loginUser(globalUser);
@@ -77,6 +81,7 @@ public class RegisterTest extends BaseTest {
     }
 
     @Test
+    @Tag("register")
     @Description("Register_TC02c -  Verify that employee cannot be added when ID is left blank" +
             "Bug - Input field has no placeholder" +
             "Bug - No validation error is being raised")
@@ -96,6 +101,7 @@ public class RegisterTest extends BaseTest {
     }
 
     @Test
+    @Tag("register")
     @Description("Register_TC03 - Verify that First Name and Last Name fields do not accept numeric or special characters" +
             "Bug - No validation error is being raised")
     @Disabled
@@ -116,6 +122,7 @@ public class RegisterTest extends BaseTest {
     }
 
     @Test
+    @Tag("register")
     @Description("Register_TC04 - Verify that field length restrictions are enforced")
     public void verifyFieldInputMaxLengthEmployeeTest() {
         loginPage.loginUser(globalUser);
@@ -143,6 +150,7 @@ public class RegisterTest extends BaseTest {
     }
 
     @Test
+    @Tag("register")
     @Description("Register_TC06 - Verify that the newly added employee appears in the employee list/table after submission.")
     public void verifyNewEmployeeIsInEmployeeListTest() {
         loginPage.loginUser(globalUser);
