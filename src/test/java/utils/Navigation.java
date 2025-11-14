@@ -1,6 +1,11 @@
 package utils;
+import base.BaseTest;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.WaitUntilState;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class Navigation {
 
@@ -12,10 +17,20 @@ public class Navigation {
 
     public Navigation (Page testPage) {
         page = testPage;
-        loginUrl = "http://localhost/orangehrm-5.7/web/index.php/auth/login";
-        registerUserUrl = "http://localhost/orangehrm-5.7/web/index.php/admin/saveSystemUser";
-        registerEmployeeUrl = "http://localhost/orangehrm-5.7/web/index.php/pim/addEmployee";
-        viewEmployeeListUrl = "http://localhost/orangehrm-5.7/web/index.php/pim/viewEmployeeList";
+
+        Properties properties = new Properties();
+        try (InputStream config = BaseTest.class.getClassLoader().getResourceAsStream("config.properties")) {
+            properties.load(config);
+
+            // URL
+            loginUrl = properties.getProperty("loginUrl");
+            registerUserUrl = properties.getProperty("registerUrl");;
+            registerEmployeeUrl = properties.getProperty("registerEmployeeUrl");;
+            viewEmployeeListUrl = properties.getProperty("viewEmployeeListUrl");;
+
+        } catch (IOException e) {
+            System.out.println("Exception: " + e.getMessage());
+        }
     }
 
     public void navigateLogin() {

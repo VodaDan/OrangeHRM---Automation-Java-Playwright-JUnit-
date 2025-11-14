@@ -102,7 +102,7 @@ public class LoginTest extends BaseTest {
 
     @Test
     @Tag("login")
-    @Description("Login_TC09 - Verify that login fail when username is correct and password contains aditional characters")
+    @Description("Login_TC09 - Verify that login fail when username is correct and password contains additional characters")
     public void validUsernameValidPasswordWithAdditionalCharactersLoginTest() {
         navigation.navigateLogin();
 
