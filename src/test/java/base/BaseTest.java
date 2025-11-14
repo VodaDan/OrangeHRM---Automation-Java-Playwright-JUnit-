@@ -1,6 +1,7 @@
 package base;
 
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.junit.Options;
 import io.qameta.allure.Allure;
 import model.User;
 import org.junit.jupiter.api.*;
@@ -46,6 +47,8 @@ public class BaseTest {
     // Browser - Playwright
     protected static String browserType;
     protected static Boolean headless;
+    protected static int slowMo;
+    protected static double timeout;
 
     @BeforeAll
     public static void importConfig() {
@@ -71,6 +74,8 @@ public class BaseTest {
             // Browser - Playwright
             browserType = properties.getProperty("browser");
             headless = Boolean.valueOf(properties.getProperty("headless"));
+            slowMo = Integer.valueOf(properties.getProperty("slowMo"));
+            timeout = Double.valueOf(properties.getProperty("timeout"));
 
         } catch (IOException e) {
             System.out.println("Exception: " + e.getMessage());
@@ -81,7 +86,23 @@ public class BaseTest {
     @BeforeEach
     public void setup() {
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true).setTimeout(0));
+
+        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(headless).setTimeout(timeout).setSlowMo(slowMo);
+
+        switch (browserType){
+            case "chromium":
+                browser = playwright.chromium().launch(options);
+                break;
+            case "firefox":
+                browser = playwright.firefox().launch(options);
+                break;
+            case "webkit":
+                browser = playwright.webkit().launch(options);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported browser: " + browserType);
+        }
+
         context = browser.newContext();
         String traceFile = "target/traces/" + "_" + UUID.randomUUID() + ".zip";
         try {
