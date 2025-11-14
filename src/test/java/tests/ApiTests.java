@@ -37,11 +37,6 @@ public class ApiTests extends BaseTest {
     private static String token;
     private static APIRequestContext api;
 
-    private static String baseUrl;
-    private static String employeeEndpoint;
-    private static String usersEndpoint;
-    private static String projectsEndpoint;
-
     @BeforeEach
     public void setup() {
         super.setup();
@@ -52,10 +47,6 @@ public class ApiTests extends BaseTest {
         ApiUtils.AuthContext authContext = ApiUtils.extractToken();
         api = authContext.getApi();
         token = authContext.getToken();
-        baseUrl = "http://localhost/orangehrm-5.7/web/index.php/";
-        employeeEndpoint = "api/v2/pim/employees";
-        usersEndpoint = "api/v2/admin/users";
-        projectsEndpoint = "api/v2/time/projects";
     }
 
     // EMPLOYEE API --------------------------------------------------------------------------------
