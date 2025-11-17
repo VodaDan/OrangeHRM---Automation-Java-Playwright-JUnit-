@@ -15,9 +15,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pages.LoginPage;
+import utils.DataProvider;
 
 import java.io.FileWriter;
 import java.util.Collections;
@@ -241,6 +246,19 @@ public class LoginTest extends BaseTest {
             System.out.println(e.getMessage());
         }
         assertEquals(Collections.emptyList(), accessibilityScanResults.getViolations());
+    }
+
+
+    @Tag("login")
+    @Tag("parameterized")
+    @ParameterizedTest
+    @MethodSource("utils.DataProvider#loginInvalidCsvProvider")
+    @Description(" - Verify login behaviour with invalid credentials from csv file")
+    public void loginInvalidParameteriezdTest(String username, String password) {
+        navigation.navigateLogin();
+        User mockUser = new User(username,password);
+        loginPage.loginUser(mockUser);
+        assertThat(page).hasURL(loginUrl);
     }
 
 }

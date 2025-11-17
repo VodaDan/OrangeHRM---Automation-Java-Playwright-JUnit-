@@ -1,0 +1,19 @@
+username,password
+,admin123
+Admin,
+wrong,wrong
+Admin ,admin123
+Admin,wrongpass
+!Admin,root
+Admin, admin 
+Admin,wrongpass
+Ad,min,admin123
+Admin123!,pass
+verylongusername12345678901234567890,pass
+admin,verylongpassword12345678901234567890
+,
+../../etc/passwd,admin123
+../../../windows/system32,admin123
+<script>,pass
+<script>alert(1)</script,pass
+<script>alert('XSS')</script,pass

@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -31,9 +33,11 @@ public class BaseTest {
     protected RegisterPage registerPage;
     protected LoginPage loginPage;
     protected EmployeeListPage employeeListPage;
+    protected static Path screenshotDir;
 
     // URL
     protected static String baseUrl;
+    protected static String loginUrl;
 
     // Endpoints
     protected static String employeeEndpoint;
@@ -51,7 +55,12 @@ public class BaseTest {
     protected static double timeout;
 
     @BeforeAll
-    public static void importConfig() {
+    public static void importConfig() throws IOException {
+
+        String runFolder = "testrun_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH'h'_mm'm'"));
+        screenshotDir = Paths.get("screenshots", runFolder);
+        Files.createDirectories(screenshotDir);
+
         Properties properties = new Properties();
 
         try (InputStream config = BaseTest.class.getClassLoader().getResourceAsStream("config.properties")) {
@@ -61,6 +70,7 @@ public class BaseTest {
 
             // URL
             baseUrl = properties.getProperty("baseUrl");
+            loginUrl = properties.getProperty("loginUrl");
 
             // Endpoints
             employeeEndpoint = "api/v2/pim/employees";
@@ -131,18 +141,24 @@ public class BaseTest {
 
     @AfterEach
     public void tearDown(TestInfo testInfo) throws IOException {
+        // Sanitize test name so invalid chars don't break the path
+        String safeName = testInfo.getDisplayName().replaceAll("[\\\\/:*?\"<>|\\s]", "_");
+
         // Screenshot
         if (page != null) {
-            Path screenshotDir = Paths.get("screenshots");
-            Files.createDirectories(screenshotDir);
-            String screenshotFile = screenshotDir.resolve(testInfo.getDisplayName() + "_" + UUID.randomUUID() + ".png").toString();
-            Files.write(Paths.get(screenshotFile), page.screenshot(new Page.ScreenshotOptions().setFullPage(true)));
+
+            String screenshotFile = screenshotDir.resolve(safeName + "_" + UUID.randomUUID() + ".png").toString();
+
+            byte[] screenshotData = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
+
+            Files.write(Paths.get(screenshotFile), screenshotData);
+
             Allure.addAttachment(testInfo.getDisplayName(), "image/png", Files.newInputStream(Paths.get(screenshotFile)), "png");
         }
 
         // Stop tracing
         if (context != null) {
-            String traceFile = "target/traces/" + testInfo.getDisplayName() + "_" + UUID.randomUUID() + ".zip";
+            String traceFile = "target/traces/" + safeName + "_" + UUID.randomUUID() + ".zip";
             Files.createDirectories(Paths.get(traceFile).getParent());
             context.tracing().stop(new Tracing.StopOptions().setPath(Paths.get(traceFile)));
             context.close();
