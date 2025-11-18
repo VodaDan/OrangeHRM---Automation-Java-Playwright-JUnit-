@@ -13,9 +13,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import pages.RegisterPage;
 import pages.LoginPage;
 import utils.ApiUtils;
+import utils.DataProvider;
 import utils.UrlUtils;
 
 import java.util.List;
@@ -168,6 +172,32 @@ public class RegisterTest extends BaseTest {
 
         assertThat(employeeListPage.getEmployeeTable()).containsText(mockUser.getFirstName());
         assertThat(employeeListPage.getEmployeeTable()).containsText(mockUser.getEmployeeId());
+    }
+
+    @ParameterizedTest
+    @MethodSource("utils.DataProvider#registerJsonProvider")
+    @Tag("register")
+    @Tag("parameterized")
+    public void registerValidAndInvalidParameterizedTest(DataProvider.RegisterTestDTO user) {
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        System.out.println(user.getExpectedPage());
+        loginPage.loginUser(globalUser);
+        navigation.navigateAddEmployee();
+        registerPage.addEmployeeAndUser(user);
+
+        switch (user.getExpectedPage()) {
+            case "register":
+                assertThat(page).hasURL(addEmployeeUrl);
+                break;
+            case "dashboard":
+                page.waitForLoadState(LoadState.NETWORKIDLE);
+                assertThat(page).hasURL(Pattern.compile(registerPage.getViewPersonalDetailsURL()+".*"));
+                break;
+        }
+
+
+
     }
 
 
