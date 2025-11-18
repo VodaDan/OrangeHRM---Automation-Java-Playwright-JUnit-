@@ -61,6 +61,6 @@ public class DataProvider {
 
         List<RegisterTestDTO> data = gson.fromJson(new FileReader(Paths.get(path).toFile()), listType);
 
-        return data.stream().map(d -> Arguments.of(d.getUsername(),d.getPassword(),d.getExpectedPage(),d.getFirstName(),d.getMiddleName(),d.getLastName(),d.getEmployeeId()));
+        return data.stream().map(Arguments::of);
     }
 }
