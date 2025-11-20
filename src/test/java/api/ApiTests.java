@@ -1,33 +1,25 @@
-package tests;
+package api;
 
 import annotations.Endpoint;
 import base.BaseTest;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
-import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.options.FormData;
 import com.microsoft.playwright.options.RequestOptions;
 import jdk.jfr.Description;
 import model.Project;
 import model.User;
-import org.apiguardian.api.API;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import utils.ApiUtils;
-import utils.UrlUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
