@@ -18,6 +18,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import pages.EmployeeListPage;
+import pages.LeavePage;
 import pages.LoginPage;
 import pages.RegisterPage;
 import utils.Navigation;
@@ -32,6 +33,7 @@ public class BaseTest {
     protected User globalUser = new User("admin","admin","user" ,true,"adminuser","!Adminuser123","0001");
     protected RegisterPage registerPage;
     protected LoginPage loginPage;
+    protected LeavePage leavePage;
     protected EmployeeListPage employeeListPage;
     protected static Path screenshotDir;
 
@@ -131,6 +133,7 @@ public class BaseTest {
         registerPage = new RegisterPage(page);
         loginPage = new LoginPage(page);
         employeeListPage = new EmployeeListPage(page);
+        leavePage = new LeavePage(page);
         // Navigation
         navigation = new Navigation(page);
 

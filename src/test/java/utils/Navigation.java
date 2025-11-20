@@ -10,6 +10,7 @@ import java.util.Properties;
 public class Navigation {
 
     private String loginUrl;
+    private String leaveUrl;
     private String registerUserUrl;
     private String registerEmployeeUrl;
     private String viewEmployeeListUrl;
@@ -24,6 +25,7 @@ public class Navigation {
 
             // URL
             loginUrl = properties.getProperty("loginUrl");
+            leaveUrl = properties.getProperty("leaveUrl");
             registerUserUrl = properties.getProperty("registerUrl");;
             registerEmployeeUrl = properties.getProperty("addEmployeeUrl");;
             viewEmployeeListUrl = properties.getProperty("viewEmployeeListUrl");;
@@ -43,6 +45,10 @@ public class Navigation {
 
     public void navigateAddEmployee() {
         page.navigate(registerEmployeeUrl);
+    }
+
+    public void navigateToLeavePage() {
+        page.navigate(leaveUrl);
     }
 
     public void navigateEmployeeList() {
