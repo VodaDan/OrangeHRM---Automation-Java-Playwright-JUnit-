@@ -25,7 +25,7 @@ public class Navigation {
             // URL
             loginUrl = properties.getProperty("loginUrl");
             registerUserUrl = properties.getProperty("registerUrl");;
-            registerEmployeeUrl = properties.getProperty("registerEmployeeUrl");;
+            registerEmployeeUrl = properties.getProperty("addEmployeeUrl");;
             viewEmployeeListUrl = properties.getProperty("viewEmployeeListUrl");;
 
         } catch (IOException e) {

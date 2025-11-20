@@ -1,6 +1,7 @@
 package tests;
 
 import base.BaseTest;
+import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
@@ -13,9 +14,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import pages.RegisterPage;
 import pages.LoginPage;
 import utils.ApiUtils;
+import utils.DataProvider;
 import utils.UrlUtils;
 
 import java.util.List;
@@ -168,6 +173,40 @@ public class RegisterTest extends BaseTest {
 
         assertThat(employeeListPage.getEmployeeTable()).containsText(mockUser.getFirstName());
         assertThat(employeeListPage.getEmployeeTable()).containsText(mockUser.getEmployeeId());
+    }
+
+    @ParameterizedTest
+    @MethodSource("utils.DataProvider#registerJsonProvider")
+    @Tag("register")
+    @Tag("parameterized")
+    public void registerValidAndInvalidParameterizedTest(DataProvider.RegisterTestDTO user) {
+        loginPage.loginUser(globalUser);
+        navigation.navigateAddEmployee();
+        registerPage.addEmployeeAndUser(user);
+
+        switch (user.getExpectedPage()) {
+            case "register":
+                assertThat(page).hasURL(addEmployeeUrl);
+                break;
+            case "dashboard":
+                page.waitForLoadState(LoadState.NETWORKIDLE);
+
+                assertThat(page).hasURL(Pattern.compile(registerPage.getViewPersonalDetailsURL()+".*"));
+
+                // Cleanup
+                String emp = UrlUtils.extractEmpId(page.url());
+                ApiUtils.extractToken();
+                APIResponse deleteEmployeeResponse =  ApiUtils.deleteEmployee(emp);
+                System.out.println("Delete Employee status: " + deleteEmployeeResponse.status());
+                break;
+        }
+
+
+
+
+
+
+
     }
 
 

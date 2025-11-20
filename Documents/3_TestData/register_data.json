@@ -1,0 +1,57 @@
+[
+  {
+    "username": "",
+    "password": "admin123",
+    "firstName": "John",
+    "lastName": "Doe",
+    "middleName": "Michael",
+    "employeeId": "EMP001",
+    "status": "Active",
+    "role": "Admin",
+    "expectedPage": "register"
+  },
+  {
+    "username": "Admin",
+    "password": "",
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "middleName": "Ann",
+    "employeeId": "EMP002",
+    "status": "Active",
+    "role": "ESS",
+    "expectedPage": "register"
+  },
+  {
+    "username": "wronguser",
+    "password": "wrongpass",
+    "firstName": "Bob",
+    "lastName": "Johnson",
+    "middleName": "Lee",
+    "employeeId": "EMP003",
+    "status": "Inactive",
+    "role": "ESS",
+    "expectedPage": "register"
+  },
+  {
+    "username": " Admin ",
+    "password": "admin123",
+    "firstName": "Alice",
+    "lastName": "Williams",
+    "middleName": "Marie",
+    "employeeId": "EMP004",
+    "status": "Active",
+    "role": "Admin",
+    "expectedPage": "register"
+  },
+  {
+    "username": "validuser",
+    "password": "ValidPass123!",
+    "firstName": "Charlie",
+    "lastName": "Brown",
+    "middleName": "David",
+    "employeeId": "EMP005",
+    "status": "Active",
+    "role": "ESS",
+    "expectedPage": "dashboard"
+  }
+]

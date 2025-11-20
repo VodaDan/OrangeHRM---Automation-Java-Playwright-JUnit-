@@ -1,5 +1,6 @@
 package utils;
 
+import base.BaseTest;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,7 +22,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ApiUtils {
+public class ApiUtils extends BaseTest {
 
     private static APIRequestContext request;
 
@@ -115,6 +116,13 @@ public class ApiUtils {
         return dataResponse.get("empNumber").getAsInt();
     }
 
+    public static APIResponse deleteEmployee(String emp) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("ids", Collections.singletonList(emp));
+        RequestOptions options = RequestOptions.create().setData(payload);
+        return request.delete(baseUrl + employeeEndpoint,options);
+    }
+
     public static CreateUserResponseDTO createUser(User userSent) {
         int emp = ApiUtils.createEmployee(userSent);
 
@@ -137,6 +145,13 @@ public class ApiUtils {
         CreateUserResponseDTO responseDTO = new CreateUserResponseDTO(createUserResponse,emp);
 
         return responseDTO;
+    }
+
+    public static APIResponse deleteUser(String emp) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("ids", Collections.singletonList(emp));
+        RequestOptions options = RequestOptions.create().setData(payload);
+        return request.delete("http://localhost/orangehrm-5.7/web/index.php/api/v2/admin/users",options);
     }
 
     public static APIResponse createProject(Project generatedProject){

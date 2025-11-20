@@ -38,6 +38,7 @@ public class BaseTest {
     // URL
     protected static String baseUrl;
     protected static String loginUrl;
+    protected static String addEmployeeUrl;
 
     // Endpoints
     protected static String employeeEndpoint;
@@ -71,6 +72,7 @@ public class BaseTest {
             // URL
             baseUrl = properties.getProperty("baseUrl");
             loginUrl = properties.getProperty("loginUrl");
+            addEmployeeUrl = properties.getProperty("addEmployeeUrl");
 
             // Endpoints
             employeeEndpoint = "api/v2/pim/employees";
