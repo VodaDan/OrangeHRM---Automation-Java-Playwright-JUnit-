@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>D:/Java/Automation/OrangeHRM---Automation-Java-Playwright-JUnit-/src/test/java</OriginalElement>
+  <nodes>
+    <node x="-1191.8515762410316" y="1201.916929698708">utils.ProjectDataFactory</node>
+    <node x="-286.8127104734574" y="1538.5">tests.RegisterTest</node>
+    <node x="199.93288608321382" y="1538.5">tests.LoginTest</node>
+    <node x="664.8186240459111" y="468.1815747489239">pages.RegisterPage</node>
+    <node x="-15.5" y="1298.5">base.BaseTest</node>
+    <node x="-592.7404063127685" y="1913.6258903873747">utils.ApiUtils.CreateUserResponseDTO</node>
+    <node x="-825.7079618938296" y="1201.916929698708">utils.Navigation</node>
+    <node x="-1056.2428301865123" y="1592.572828694405">utils.UrlUtils</node>
+    <node x="-1191.8515762410316" y="1307.4526817790515">utils.TestDataFactory</node>
+    <node x="94.762216355811" y="477.0306720229562">pages.EmployeeListPage</node>
+    <node x="699.6618077474893" y="1538.5">tests.IntegrationTest</node>
+    <node x="-184.77836671449063" y="852.1815747489239">utils.DataProvider.RegisterTestDTO</node>
+    <node x="380.83766771879493" y="468.1815747489239">pages.LoginPage</node>
+    <node x="-286.8127104734574" y="1956.0275799139167">api.ApiTests</node>
+    <node x="954.7939925394544" y="468.1815747489238">pages.LeavePage</node>
+    <node x="-472.7591242467718" y="468.1815747489239">model.User</node>
+    <node x="-863.7539340028687" y="1913.6258903873747">utils.ApiUtils.AuthContext</node>
+    <node x="-542.2263540889526" y="1034.5">utils.DataProvider</node>
+    <node x="-209.53893761836423" y="468.1815747489239">model.Project</node>
+    <node x="30.932886083213816" y="1956.0275799139167">annotations.Endpoint</node>
+    <node x="-817.6451879483495" y="1592.572828694405">utils.ApiUtils</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="utils.ApiUtils.CreateUserResponseDTO" target="utils.ApiUtils" relationship="INNER_CLASS">
+      <point x="0.0" y="-43.5" />
+      <point x="-468.2404063127685" y="1842.9843741750362" />
+      <point x="-615.6451879483495" y="1842.9843741750362" />
+      <point x="0.0" y="115.5" />
+    </edge>
+    <edge source="api.ApiTests" target="base.BaseTest" relationship="GENERALIZATION">
+      <point x="0.0" y="-187.5" />
+      <point x="-135.3127104734574" y="1865.1157721664274" />
+      <point x="184.5600878048782" y="1865.1157721664274" />
+      <point x="184.5600878048782" y="1530.116558967001" />
+      <point x="85.0" y="1530.116558967001" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="tests.RegisterTest" target="base.BaseTest" relationship="GENERALIZATION">
+      <point x="0.0" y="-127.5" />
+      <point x="-58.8127104734574" y="1506.0" />
+      <point x="85.0" y="1506.0" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="utils.ApiUtils.AuthContext" target="utils.ApiUtils" relationship="INNER_CLASS">
+      <point x="0.0" y="-43.5" />
+      <point x="-751.2539340028687" y="1842.9843741750362" />
+      <point x="-615.6451879483495" y="1842.9843741750362" />
+      <point x="0.0" y="115.5" />
+    </edge>
+    <edge source="utils.DataProvider.RegisterTestDTO" target="model.User" relationship="GENERALIZATION">
+      <point x="-52.5" y="-31.5" />
+      <point x="-132.27836671449063" y="1006.0" />
+      <point x="-358.2591242467718" y="1006.0" />
+      <point x="0.0" y="223.5" />
+    </edge>
+    <edge source="utils.ApiUtils" target="base.BaseTest" relationship="GENERALIZATION">
+      <point x="0.0" y="-115.5" />
+      <point x="-615.6451879483495" y="1672.0" />
+      <point x="-323.3330020086079" y="1672.0" />
+      <point x="-323.3330020086079" y="1506.0" />
+      <point x="85.0" y="1506.0" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="tests.IntegrationTest" target="base.BaseTest" relationship="GENERALIZATION">
+      <point x="0.0" y="-43.5" />
+      <point x="789.6618077474893" y="1506.0" />
+      <point x="85.0" y="1506.0" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="tests.LoginTest" target="base.BaseTest" relationship="GENERALIZATION">
+      <point x="0.0" y="-199.5" />
+      <point x="441.4328860832138" y="1506.0" />
+      <point x="85.0" y="1506.0" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="utils.DataProvider.RegisterTestDTO" target="utils.DataProvider" relationship="INNER_CLASS">
+      <point x="52.5" y="-31.5" />
+      <point x="-27.27836671449063" y="1006.0" />
+      <point x="-373.7263540889526" y="1006.0" />
+      <point x="0.0" y="43.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.6636740078978165" showDependencies="false" x="-192.4517596923954" y="1848.8247024390232" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
