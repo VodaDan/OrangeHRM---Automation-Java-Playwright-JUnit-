@@ -30,7 +30,7 @@ public class BaseTest {
     protected Page page;
     protected BrowserContext context;
     protected Navigation navigation;
-    protected User globalUser = new User("admin","admin","user" ,true,"adminuser","!Adminuser123","0001");
+    protected User globalUser = new User("admin","admin","admin","user" ,true,"adminuser","!Adminuser123","0001");
     protected RegisterPage registerPage;
     protected LoginPage loginPage;
     protected LeavePage leavePage;
@@ -41,6 +41,7 @@ public class BaseTest {
     protected static String baseUrl;
     protected static String loginUrl;
     protected static String addEmployeeUrl;
+    protected static String dashboardIndexUrl;
 
     // Endpoints
     protected static String employeeEndpoint;
@@ -75,6 +76,7 @@ public class BaseTest {
             baseUrl = properties.getProperty("baseUrl");
             loginUrl = properties.getProperty("loginUrl");
             addEmployeeUrl = properties.getProperty("addEmployeeUrl");
+            dashboardIndexUrl = properties.getProperty("dashboardIndexUrl");
 
             // Endpoints
             employeeEndpoint = "api/v2/pim/employees";

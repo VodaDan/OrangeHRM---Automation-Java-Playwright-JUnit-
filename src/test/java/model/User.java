@@ -13,9 +13,10 @@ public class User {
     private String password;
     private String employeeId;
 
-    public User(String role, String firstName, String lastName, boolean status, String username, String password, String employeeId) {
+    public User(String role, String firstName, String middleName, String lastName, boolean status, String username, String password, String employeeId) {
         this.role = role;
         this.firstName = firstName;
+        this.middleName = middleName;
         this.lastName = lastName;
         this.status = status;
         this.username = username;
@@ -38,13 +39,14 @@ public class User {
 
     public User generateRandomUser() {
         firstName = TestDataFactory.generateRandomName();
+        middleName = TestDataFactory.generateRandomName();
         lastName = TestDataFactory.generateRandomLastName();
         employeeId = TestDataFactory.generateEmployeeId();
         status = true;
         role = "ESS";
         username = TestDataFactory.generateRandomUsername();
         password = TestDataFactory.generateRandomPassword();
-        return new User(role,firstName,lastName,status,username,password,employeeId);
+        return new User(role,firstName,middleName,lastName,status,username,password,employeeId);
     }
 
     public String getFirstName() {

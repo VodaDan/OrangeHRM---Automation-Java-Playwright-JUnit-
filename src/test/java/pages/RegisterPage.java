@@ -94,6 +94,7 @@ public class RegisterPage {
 
         saveEmployee();
         page.waitForLoadState(LoadState.NETWORKIDLE);
+        page.waitForURL("**/viewPersonalDetails/**");
     }
 
     public String getViewPersonalDetailsURL() {
